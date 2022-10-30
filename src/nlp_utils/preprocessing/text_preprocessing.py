@@ -144,6 +144,33 @@ def remove_many_spaces(text: Optional[str]) -> Optional[str]:
     return re.sub(r'\s+', ' ', text)
 
 
+def remove_emoji(text: Optional[str]) -> Optional[str]:
+    """
+    Removes any emojis in the given text
+
+    Args:
+        text (Optional[str]): a text that may contain multiple emojis
+
+    Returns:
+        Optional[str]: a purified string that does not have any emojis
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    emoji_pattern = re.compile(
+        '['
+        u'\U0001F600-\U0001F64F'  # emoticons
+        u'\U0001F300-\U0001F5FF'  # symbols & pictographs
+        u'\U0001F680-\U0001F6FF'  # transport & map symbols
+        u'\U0001F1E0-\U0001F1FF'  # flags (iOS)
+        u'\U00002702-\U000027B0'
+        u'\U000024C2-\U0001F251'
+        ']+',
+        flags=re.UNICODE)
+    return emoji_pattern.sub(r'', text)
+
+
 # Expanding contractions
 contractions_dict = {
     "ain't": "am not", "aren't": "are not", "can't": "cannot", "can't've": "cannot have", "'cause": "because",
