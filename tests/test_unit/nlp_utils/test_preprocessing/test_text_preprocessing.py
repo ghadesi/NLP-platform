@@ -17,6 +17,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_number
 from nlp_utils.preprocessing.text_preprocessing import remove_any_char
 from nlp_utils.preprocessing.text_preprocessing import remove_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
+from nlp_utils.preprocessing.text_preprocessing import remove_emoji
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -75,7 +76,7 @@ class TestNumbers:
             (None, None)
         ],
     )
-    def test_to_lower(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_numbers(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_number(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expection mismatch."
@@ -89,7 +90,7 @@ class TestCharacter:
             (None, None, None),
         ],
     )
-    def test_remove_HTML_tags(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
+    def test_remove_chars(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
 
         result_text, result_maches = remove_any_char(input_text)
 
@@ -107,11 +108,11 @@ class TestDuplication:
             (None, None)
         ],
     )
-    def test_to_lower(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_dumplication(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_duplication(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expection mismatch."
-    
+
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -121,5 +122,21 @@ class TestDuplication:
     )
     def test_many_spaces(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_many_spaces(input_text)
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expection mismatch."
+
+
+class TestEmpji:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            ("RT @ kaastore: 😁 un sourire=un cadeau 🎁", "RT @ kaastore:  un sourire=un cadeau "),
+            (None, None),
+        ],
+    )
+    def test_remove_emojis(self, input_text: Optional[str], ex_output: Optional[str]):
+
+        result_text = remove_emoji(input_text)
+
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expection mismatch."
