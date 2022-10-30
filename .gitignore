@@ -11,6 +11,7 @@
 
 NLP*
 .git*
+.ipynb_checkpoints
 
 #################### OS X ####################
 .DS_Store
