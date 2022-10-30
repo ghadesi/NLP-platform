@@ -8,10 +8,9 @@
 # changed are cross-platform
 #------------------------------------------------------------------------------
 
-
+#################### Amin Files ####################
 NLP*
-.git*
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
 #################### OS X ####################
 .DS_Store
@@ -85,8 +84,8 @@ tramp
 *_flymake.*
 
 ###################### Vim ########################
-[._]*.s[a-w][a-z]
-[._]s[a-w][a-z]
+# [._]*.s[a-w][a-z]
+# [._]s[a-w][a-z]
 *.un~
 Session.vim
 .netrwhist
@@ -180,9 +179,9 @@ xcuserdata
 .zsh/*.swp
 
 # Git aliases, identification info
-!.gitconfig
+.gitconfig
 # The gitignore of this repository itself (!)
-!.gitignore
+.gitignore
 # My global Git excludes file (acts as a global .gitignore)
 !.gitexcludes
 
