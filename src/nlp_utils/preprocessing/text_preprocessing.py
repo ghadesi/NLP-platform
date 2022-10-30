@@ -108,7 +108,7 @@ def remove_any_char(text: str) -> Tuple[Optional[str], Optional[int]]:
     return re.subn(r'[^a-zA-Z\s]', '', text, re.I | re.A)
 
 
-def remove_duplicate(text: str) -> str:
+def remove_duplication(text: str) -> Optional[str]:
     """
     Removes duplicate words from a string
 
@@ -118,6 +118,10 @@ def remove_duplicate(text: str) -> str:
     Returns:
         str: purified text that does not contain duplicate words
     """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
     # lower_case_text = to_lower(text)
     tokenize_text = text.split()
     return " ".join(sorted(set(tokenize_text), key=tokenize_text.index))
