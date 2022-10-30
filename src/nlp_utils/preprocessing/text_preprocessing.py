@@ -108,6 +108,21 @@ def remove_any_char(text: str) -> Tuple[Optional[str], Optional[int]]:
     return re.subn(r'[^a-zA-Z\s]', '', text, re.I | re.A)
 
 
+def remove_duplicate(text: str) -> str:
+    """
+    Removes duplicate words from a string
+
+    Args:
+        text (str): a text may contain multiple words that are the same
+
+    Returns:
+        str: purified text that does not contain duplicate words
+    """
+    # lower_case_text = to_lower(text)
+    tokenize_text = text.split()
+    return " ".join(sorted(set(tokenize_text), key=tokenize_text.index))
+
+
 # Expanding contractions
 contractions_dict = {
     "ain't": "am not", "aren't": "are not", "can't": "cannot", "can't've": "cannot have", "'cause": "because",
