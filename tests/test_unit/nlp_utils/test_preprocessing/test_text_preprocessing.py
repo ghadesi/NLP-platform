@@ -15,6 +15,7 @@ from nlp_utils.preprocessing.text_preprocessing import to_strip
 from nlp_utils.preprocessing.text_preprocessing import to_lower
 from nlp_utils.preprocessing.text_preprocessing import remove_number
 from nlp_utils.preprocessing.text_preprocessing import remove_any_char
+from nlp_utils.preprocessing.text_preprocessing import remove_duplication
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -94,3 +95,18 @@ class TestCharacter:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
         assert result_text == ex_output_text and result_maches == ex_num_maches, "Expection mismatch."
+
+
+class TestDuplication:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            ("Hello hello", "Hello hello"),
+            ("Hello words words! words Hello words", "Hello words words!"),
+            (None, None)
+        ],
+    )
+    def test_to_lower(self, input_text: Optional[str], ex_output: Optional[str]):
+        result_text = remove_duplication(input_text)
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expection mismatch."
