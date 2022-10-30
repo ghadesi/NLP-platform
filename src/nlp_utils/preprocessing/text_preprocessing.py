@@ -16,13 +16,13 @@ import pandas as pd
 # ───────────────────────────────── Code ────────────────────────────────── #
 
 
-def remove_xml(html_text: str) -> Tuple[Optional[str], Optional[int]]:
+def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
     Eliminates the HTML tags from the given text and returns a tuple
     that contains the purified text and the number of matches.
 
     Args:
-        html_text (str): a text variable may contain HTML tags
+        html_text (Optional[str]): a text variable may contain HTML tags
 
     Returns:
         Tuple[str, int]: (purified text accoding to HTML tags, the number of matches)
@@ -37,12 +37,12 @@ def remove_xml(html_text: str) -> Tuple[Optional[str], Optional[int]]:
     return re.subn(r'<[^>]+?>', '', html_text)
 
 
-def to_lower(text: str) -> Optional[str]:
+def to_lower(text: Optional[str]) -> Optional[str]:
     """
     Converts the given text to lower case
 
     Args:
-        text (str): a text to be converted
+        text (Optional[str]): a text to be converted
 
     Returns:
         Optional[str]: a lowercase string
@@ -54,12 +54,12 @@ def to_lower(text: str) -> Optional[str]:
     return text.lower()
 
 
-def remove_number(text: str) -> Optional[str]:
+def remove_number(text: Optional[str]) -> Optional[str]:
     """
     Removes any digits from the given string
 
     Args:
-        text (str): a text may contain digits
+        text (Optional[str]): a text may contain digits
 
     Returns:
         Optional[str]: a purified string that does not have any numbers
@@ -70,13 +70,13 @@ def remove_number(text: str) -> Optional[str]:
     return ''.join(c for c in text if not c.isdigit())
 
 
-def to_strip(text: str) -> Optional[str]:
+def to_strip(text: Optional[str]) -> Optional[str]:
     """
     Removes all whitespaces at the beginning and end of the string.
     Also, it eliminates multiple spaces between words.
 
     Args:
-        text (str): a string may contain multiple spaces 
+        text (Optional[str]): a string may contain multiple spaces 
 
     Returns:
         str: a purified string that does not have useless whitespaces
@@ -88,12 +88,12 @@ def to_strip(text: str) -> Optional[str]:
     return " ".join([c for c in text.split()])
 
 
-def remove_any_char(text: str) -> Tuple[Optional[str], Optional[int]]:
+def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes all characters in the given text
 
     Args:
-        text (str): a text may contain multiple types of characters
+        text (Optional[str]): a text may contain multiple types of characters
 
     Returns:
         Tuple[Optional[str], Optional[int]]: (purified text according to any characters, the number of matches)
@@ -108,12 +108,12 @@ def remove_any_char(text: str) -> Tuple[Optional[str], Optional[int]]:
     return re.subn(r'[^a-zA-Z\s]', '', text, re.I | re.A)
 
 
-def remove_duplication(text: str) -> Optional[str]:
+def remove_duplication(text: Optional[str]) -> Optional[str]:
     """
     Removes duplicate words from a string
 
     Args:
-        text (str): a text may contain multiple words that are the same
+        text (Optional[str]): a text may contain multiple words that are the same
 
     Returns:
         str: purified text that does not contain duplicate words
@@ -125,6 +125,23 @@ def remove_duplication(text: str) -> Optional[str]:
     # lower_case_text = to_lower(text)
     tokenize_text = text.split()
     return " ".join(sorted(set(tokenize_text), key=tokenize_text.index))
+
+
+def remove_many_spaces(text: Optional[str]) -> Optional[str]:
+    """
+    Removes continuous whitespaces
+
+    Args:
+        text (Optional[str]): a text that may contain multiple spaces sequentially
+
+    Returns:
+        Optional[str]: a text string without any continuous whitespaces
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    return re.sub(r'\s+', ' ', text)
 
 
 # Expanding contractions
