@@ -12,8 +12,8 @@ import pandas as pd
 
 # ───────────────────────────────── Code ────────────────────────────────── #
 
-# Using re.compile() and saving the resulting regular expression object for 
-# reuse is more efficient when the expression will be used several times in a 
+# Using re.compile() and saving the resulting regular expression object for
+# reuse is more efficient when the expression will be used several times in a
 # single program
 
 EMOJI_PATTERN = re.compile(
@@ -35,6 +35,11 @@ URL_PATTERN = re.compile(r"(ftp://|smtp://|SMTP://|http://|https://|http://www\.
                          r"(?:\?[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]+"
                          r"=[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]*)?")
 
+XML_PATTERN = re.compile(r"<[^>]+?>")
+
+CHAR_PATTERN = re.compile(r"[^a-zA-Z\s]")
+
+SPACE_PATTERN = re.compile(r"\s+")
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
@@ -54,7 +59,7 @@ def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if not isinstance(html_text, str):
         return None, None
 
-    return re.subn(r'<[^>]+?>', '', html_text)
+    return re.subn(XML_PATTERN, r"", html_text)
 
 
 def to_lower(text: Optional[str]) -> Optional[str]:
@@ -125,7 +130,7 @@ def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if not isinstance(text, str):
         return None, None
 
-    return re.subn(r'[^a-zA-Z\s]', '', text, re.I | re.A)
+    return re.subn(CHAR_PATTERN, r"", text, re.I | re.A)
 
 
 def remove_duplication(text: Optional[str]) -> Optional[str]:
@@ -161,7 +166,7 @@ def remove_many_spaces(text: Optional[str]) -> Optional[str]:
     if pd.isnull(text) or not isinstance(text, str):
         return None
 
-    return re.sub(r'\s+', r' ', text)
+    return re.sub(SPACE_PATTERN, r" ", text)
 
 
 def remove_emoji(text: Optional[str]) -> Optional[str]:
@@ -180,6 +185,7 @@ def remove_emoji(text: Optional[str]) -> Optional[str]:
 
     return re.sub(EMOJI_PATTERN, r'', text)
 
+
 def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes any url in the given text (Example: https://regex101.com/r/RvtAey/1)
@@ -189,11 +195,11 @@ def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
 
     Returns:
         Tuple[Optional[str], Optional[int]]: a purified string that does not have any URLs
-    """    
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None, None
-    
+
     return re.subn(URL_PATTERN, r'', text)
 
 
