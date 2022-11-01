@@ -11,4 +11,5 @@ from nlp_utils.preprocessing.text_preprocessing import remove_any_char
 from nlp_utils.preprocessing.text_preprocessing import remove_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
 from nlp_utils.preprocessing.text_preprocessing import remove_emoji
+from nlp_utils.preprocessing.text_preprocessing import remove_url
 from nlp_utils.preprocessing.text_preprocessing import main_contraction

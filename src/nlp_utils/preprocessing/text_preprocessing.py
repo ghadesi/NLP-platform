@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# encoding: utf-8
-
 """Module providing utils code for cleaning users text data."""
 # ───────────────────────────────── Imports ────────────────────────────────── #
 # Standard Library
@@ -14,6 +11,29 @@ import pandas as pd
 # Private
 
 # ───────────────────────────────── Code ────────────────────────────────── #
+
+# Using re.compile() and saving the resulting regular expression object for 
+# reuse is more efficient when the expression will be used several times in a 
+# single program
+
+EMOJI_PATTERN = re.compile(
+    '['
+    u'\U0001F600-\U0001F64F'  # emoticons
+    u'\U0001F300-\U0001F5FF'  # symbols & pictographs
+    u'\U0001F680-\U0001F6FF'  # transport & map symbols
+    u'\U0001F1E0-\U0001F1FF'  # flags (iOS)
+    u'\U00002702-\U000027B0'
+    u'\U000024C2-\U0001F251'
+    ']+',
+    flags=re.UNICODE)
+
+URL_PATTERN = re.compile(r"(ftp://|smtp://|SMTP://|http://|https://|http://www\.|https://www\.|www\.)?"
+                         r"(?:[\x21-\x39\x3b-\x3f\x41-\x7e]+(?::[!-9;-?A-~]+)?@)?(?:xn--[0-9a-z]+|[0-9A-Za-z_-]+\.)*"
+                         r"(?:xn--[0-9a-z]+|[0-9A-Za-z-]+)\.(?:xn--[0-9a-z]+|[0-9A-Za-z]{2,10})"
+                         r"(?::(?:6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[1-5]\d{4}|[1-9]\d{1,3}|\d))?"
+                         r"(?:/[\x21\x22\x24\x25\x27-x2e\x30-\x3b\x3e\x40-\x5b\x5d-\x7e]*)*(?:\#[\x21\x22\x24\x25\x27-x2e\x30-\x3b\x3e\x40-\x5b\x5d-\x7e]*)?"
+                         r"(?:\?[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]+"
+                         r"=[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]*)?")
 
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
@@ -141,7 +161,7 @@ def remove_many_spaces(text: Optional[str]) -> Optional[str]:
     if pd.isnull(text) or not isinstance(text, str):
         return None
 
-    return re.sub(r'\s+', ' ', text)
+    return re.sub(r'\s+', r' ', text)
 
 
 def remove_emoji(text: Optional[str]) -> Optional[str]:
@@ -158,17 +178,23 @@ def remove_emoji(text: Optional[str]) -> Optional[str]:
     if pd.isnull(text) or not isinstance(text, str):
         return None
 
-    emoji_pattern = re.compile(
-        '['
-        u'\U0001F600-\U0001F64F'  # emoticons
-        u'\U0001F300-\U0001F5FF'  # symbols & pictographs
-        u'\U0001F680-\U0001F6FF'  # transport & map symbols
-        u'\U0001F1E0-\U0001F1FF'  # flags (iOS)
-        u'\U00002702-\U000027B0'
-        u'\U000024C2-\U0001F251'
-        ']+',
-        flags=re.UNICODE)
-    return emoji_pattern.sub(r'', text)
+    return re.sub(EMOJI_PATTERN, r'', text)
+
+def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+    """
+    Removes any url in the given text (Example: https://regex101.com/r/RvtAey/1)
+
+    Args:
+        text (Optional[str]): a text that may contain multiple URLS
+
+    Returns:
+        Tuple[Optional[str], Optional[int]]: a purified string that does not have any URLs
+    """    
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
+    
+    return re.subn(URL_PATTERN, r'', text)
 
 
 # Expanding contractions
