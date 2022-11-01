@@ -18,6 +18,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_any_char
 from nlp_utils.preprocessing.text_preprocessing import remove_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
 from nlp_utils.preprocessing.text_preprocessing import remove_emoji
+from nlp_utils.preprocessing.text_preprocessing import remove_url
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -140,3 +141,21 @@ class TestEmpji:
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expection mismatch."
+
+
+class TestURL:
+    @pytest.mark.parametrize(
+        "input_text, ex_output_text, ex_num_maches",
+        [
+            ("My website is https://www.twanda.com/apps/details?id=com.skgames.trafficracer%22", "My website is ", 1),
+            ("Look at these links: www.my.com:8069/tf/details?id=com.j.o%22 and ftp://amazon.com/g/G/e/2011/u-3.jpg", "Look at these links:  and ", 2),
+            (None, None, None),
+        ],
+    )
+    def test_remove_urls(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
+
+        result_text, result_maches = remove_url(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
+        assert result_text == ex_output_text and result_maches == ex_num_maches, "Expection mismatch."
