@@ -109,7 +109,7 @@ class TestDuplication:
             (None, None)
         ],
     )
-    def test_remove_dumplication(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_duplication(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expection mismatch."
