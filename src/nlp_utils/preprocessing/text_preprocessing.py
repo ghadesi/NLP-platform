@@ -35,6 +35,8 @@ URL_PATTERN = re.compile(r"(ftp://|smtp://|SMTP://|http://|https://|http://www\.
                          r"(?:\?[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]+"
                          r"=[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]*)?")
 
+amir
+
 XML_PATTERN = re.compile(r"<[^>]+?>")
 
 CHAR_PATTERN = re.compile(r"[^a-zA-Z\s]")
