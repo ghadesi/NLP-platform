@@ -45,7 +45,7 @@ TWITTER_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]{1,15}\b")
 
 ANY_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]+\b")
 
-HASHTAG_pattern = re.compile(r"(?:^|_|[^\w&/]+)(?:#|＃)([\wÀ-ÖØ-öø-ÿ]+)")
+HASHTAG_pattern = re.compile(r"(?:#|＃)([\wÀ-ÖØ-öø-ÿ]+)")
 
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
@@ -244,7 +244,6 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         return None, None
 
     return re.subn(ANY_USERNAME_PATTERN, r'', text)
-
 
 
 def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
