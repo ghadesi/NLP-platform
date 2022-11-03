@@ -21,6 +21,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_emoji
 from nlp_utils.preprocessing.text_preprocessing import remove_url
 from nlp_utils.preprocessing.text_preprocessing import remove_twitter_username
 from nlp_utils.preprocessing.text_preprocessing import remove_username
+from nlp_utils.preprocessing.text_preprocessing import remove_hashtag
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -195,6 +196,27 @@ class TestUsername:
     def test_remove_any_username(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
 
         result_text, result_maches = remove_username(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
+        assert result_text == ex_output_text and result_maches == ex_num_maches, "Expection mismatch."
+
+
+class TestHashtag:
+    @pytest.mark.parametrize(
+        "input_text, ex_output_text, ex_num_maches",
+        [
+            ("RT @iamffi23: #lahore #LahoreBlasts : #punjabgovt 9 #dead.", "RT @iamffi23:   :  9 .", 4),
+            ("20 #injured. https://t.co/UU7doEtTmZ #pray_ee4 #unite #notgivingup", "20 . https://t.co/UU7doEtTmZ   ", 4),
+            ("text #hashtag! text  #hashtag1 #hash_tagüäö text #hash0ta #hash_tag", "text ! text    text  ", 5),
+            ("#хэш_тег #中英字典 #مهسا_امینی Not hashtags text #1234", "   Not hashtags text ", 4),
+            ("", "", 0),
+            (None, None, None),
+        ],
+    )
+    def test_remove_hashtag(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
+
+        result_text, result_maches = remove_hashtag(input_text)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
