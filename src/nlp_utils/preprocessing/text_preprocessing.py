@@ -35,7 +35,6 @@ URL_PATTERN = re.compile(r"(ftp://|smtp://|SMTP://|http://|https://|http://www\.
                          r"(?:\?[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]+"
                          r"=[\x21\x22\x24\x25\x27-\x2e\x30-\x3b\x40-\x5b\x5d-\x7e]*)?")
 
-
 XML_PATTERN = re.compile(r"<[^>]+?>")
 
 CHAR_PATTERN = re.compile(r"[^a-zA-Z\s]")
@@ -45,6 +44,8 @@ SPACE_PATTERN = re.compile(r"\s+")
 TWITTER_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]{1,15}\b")
 
 ANY_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]+\b")
+
+HASHTAG_pattern = re.compile(r"(?:^|_|[^\w&/]+)(?:#|＃)([\wÀ-ÖØ-öø-ÿ]+)")
 
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
@@ -243,6 +244,24 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         return None, None
 
     return re.subn(ANY_USERNAME_PATTERN, r'', text)
+
+
+
+def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+    """
+    Removes hashtagh from the given text. This function supports multilanguage hashtags. 
+
+    Args:
+        text (Optional[str]): a text that may contain multiple hashtags
+
+    Returns:
+        Tuple[Optional[str], Optional[int]]: purified text whitch doesnt have any hashtag
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
+
+    return re.subn(HASHTAG_pattern, r'', text)
 
 
 # Expanding contractions
