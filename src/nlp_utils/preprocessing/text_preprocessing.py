@@ -249,7 +249,8 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
 def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes hashtagh from the given text. This function supports multilanguage hashtags. 
-
+    Example: https://regex101.com/r/SxRara/1
+    
     Args:
         text (Optional[str]): a text that may contain multiple hashtags
 
