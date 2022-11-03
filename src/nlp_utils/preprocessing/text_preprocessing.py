@@ -42,6 +42,11 @@ CHAR_PATTERN = re.compile(r"[^a-zA-Z\s]")
 
 SPACE_PATTERN = re.compile(r"\s+")
 
+TWITTER_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]{1,15}\b")
+
+ANY_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]+\b")
+
+
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
     Eliminates the HTML tags from the given text and returns a tuple
@@ -202,6 +207,42 @@ def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         return None, None
 
     return re.subn(URL_PATTERN, r'', text)
+
+
+def remove_twitter_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+    """
+    Removes twitter username from the given text w.r.t Twitter username policies.
+    A maximum of 15 characters (words) are allowed.
+
+    Args:
+        text (Optional[str]): a text that may contain multiple usernames
+
+    Returns:
+        Tuple[Optional[str], Optional[int]]: purified text whitch doesnt have any twitter username
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
+
+    return re.subn(TWITTER_USERNAME_PATTERN, r'', text)
+
+
+def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+    """
+    Removes username parts that start with the "@" sign. 
+    In this function, there is no limitaion for the length of the username.
+
+    Args:
+        text (Optional[str]): a text that may contain multiple usernames
+
+    Returns:
+        Tuple[Optional[str], Optional[int]]: purified text whitch doesnt have any username
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
+
+    return re.subn(ANY_USERNAME_PATTERN, r'', text)
 
 
 # Expanding contractions

@@ -19,6 +19,8 @@ from nlp_utils.preprocessing.text_preprocessing import remove_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
 from nlp_utils.preprocessing.text_preprocessing import remove_emoji
 from nlp_utils.preprocessing.text_preprocessing import remove_url
+from nlp_utils.preprocessing.text_preprocessing import remove_twitter_username
+from nlp_utils.preprocessing.text_preprocessing import remove_username
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -155,6 +157,44 @@ class TestURL:
     def test_remove_urls(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
 
         result_text, result_maches = remove_url(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
+        assert result_text == ex_output_text and result_maches == ex_num_maches, "Expection mismatch."
+
+
+class TestUsername:
+    @pytest.mark.parametrize(
+        "input_text, ex_output_text, ex_num_maches",
+        [
+            ("RT @Stephan007: @Devoxx @collignont @idriss_neumann @John_Doe2000 @gunnarmorling @DevoxxFR @lescastcodeurs If interested, the Devoxx Belgium CFP opens en…", 
+             "RT :        If interested, the Devoxx Belgium CFP opens en…", 8),
+            ("@probablyfaketwitterusername @RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a ",
+             "@probablyfaketwitterusername  is answering to , this is a real '' but this is an@email.com, and this is a ", 3),
+            (None, None, None),
+        ],
+    )
+    def test_remove_twitter_username(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
+
+        result_text, result_maches = remove_twitter_username(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
+        assert result_text == ex_output_text and result_maches == ex_num_maches, "Expection mismatch."
+
+    @pytest.mark.parametrize(
+        "input_text, ex_output_text, ex_num_maches",
+        [
+            ("RT @Stephan007: @Devoxx @collignont @idriss_neumann @John_Doe2000 @gunnarmorling @DevoxxFR @lescastcodeurs If interested, the Devoxx Belgium CFP opens en…",
+             "RT :        If interested, the Devoxx Belgium CFP opens en…", 8),
+            ("@probablyfaketwitterusername @RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a ",
+             "  is answering to , this is a real '' but this is an@email.com, and this is a ", 4),
+            (None, None, None),
+        ],
+    )
+    def test_remove_any_username(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_maches: Optional[int]):
+
+        result_text, result_maches = remove_username(input_text)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_maches, (int, type(None))), "The number of maches shoulb be integer."
