@@ -45,7 +45,9 @@ TWITTER_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]{1,15}\b")
 
 ANY_USERNAME_PATTERN = re.compile(r"(?<!\w)@[\w+]+\b")
 
-HASHTAG_pattern = re.compile(r"(?:#|＃)([\wÀ-ÖØ-öø-ÿ]+)")
+HASHTAG_PATTERN = re.compile(r"(?:#|＃)([\wÀ-ÖØ-öø-ÿ]+)")
+
+EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)")
 
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
@@ -261,8 +263,24 @@ def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if pd.isnull(text) or not isinstance(text, str):
         return None, None
 
-    return re.subn(HASHTAG_pattern, r'', text)
+    return re.subn(HASHTAG_PATTERN, r'', text)
 
+
+def remove_email_address(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+    """
+    Removes email address/s from the given text
+
+    Args:
+        text (Optional[str]): a text that may contain multiple email addresses
+
+    Returns:
+        Tuple[Optional[str], Optional[int]]: purified text whitch does not have any email addresses
+    """    
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
+
+    return re.subn(EMAIL_PATTERN, r'', text)
 
 # Expanding contractions
 contractions_dict = {
