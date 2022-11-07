@@ -144,9 +144,9 @@ def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     return re.subn(CHAR_PATTERN, r"", text, re.I | re.A)
 
 
-def remove_duplication(text: Optional[str]) -> Optional[str]:
+def remove_all_duplication(text: Optional[str]) -> Optional[str]:
     """
-    Removes duplicate words from a string
+    Removes all duplicate words from a string and just maintains the first one
 
     Args:
         text (Optional[str]): a text may contain multiple words that are the same

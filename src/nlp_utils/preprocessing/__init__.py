@@ -8,7 +8,7 @@ from nlp_utils.preprocessing.text_preprocessing import to_strip
 from nlp_utils.preprocessing.text_preprocessing import to_lower
 from nlp_utils.preprocessing.text_preprocessing import remove_number
 from nlp_utils.preprocessing.text_preprocessing import remove_any_char
-from nlp_utils.preprocessing.text_preprocessing import remove_duplication
+from nlp_utils.preprocessing.text_preprocessing import remove_all_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
 from nlp_utils.preprocessing.text_preprocessing import remove_emoji
 from nlp_utils.preprocessing.text_preprocessing import remove_url

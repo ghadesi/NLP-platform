@@ -13,7 +13,7 @@ from nlp_utils.preprocessing.text_preprocessing import to_strip
 from nlp_utils.preprocessing.text_preprocessing import to_lower
 from nlp_utils.preprocessing.text_preprocessing import remove_number
 from nlp_utils.preprocessing.text_preprocessing import remove_any_char
-from nlp_utils.preprocessing.text_preprocessing import remove_duplication
+from nlp_utils.preprocessing.text_preprocessing import remove_all_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
 from nlp_utils.preprocessing.text_preprocessing import remove_emoji
 from nlp_utils.preprocessing.text_preprocessing import remove_url
@@ -128,11 +128,16 @@ class TestDuplication:
         [
             ("Hello hello", "Hello hello"),
             ("Hello world world! world Hello world", "Hello world world!"),
+            ("My name is Amin Amin. Amin comes from Iran!!", "My name is Amin Amin. comes from Iran!!"),
+            ("My name is Amin Amin , Amin comes from Iran", "My name is Amin , comes from Iran"),
+            ("what type of people were most likely to be able to be able to be able to be able to be 1.35 able to be ?",
+             "what type of people were most likely to be able 1.35 ?"),
+
             (None, None)
         ],
     )
     def test_remove_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
-        result_text = remove_duplication(input_text)
+        result_text = remove_all_duplication(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
