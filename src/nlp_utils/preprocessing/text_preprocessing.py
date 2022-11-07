@@ -49,6 +49,8 @@ HASHTAG_PATTERN = re.compile(r"(?:#|＃)([\wÀ-ÖØ-öø-ÿ]+)")
 
 EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)")
 
+BLANK_PATTERN = re.compile(r"^\s*$")
+
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
@@ -252,7 +254,7 @@ def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes hashtagh from the given text. This function supports multilanguage hashtags. 
     Example: https://regex101.com/r/SxRara/1
-    
+
     Args:
         text (Optional[str]): a text that may contain multiple hashtags
 
@@ -275,12 +277,33 @@ def remove_email_address(text: Optional[str]) -> Tuple[Optional[str], Optional[i
 
     Returns:
         Tuple[Optional[str], Optional[int]]: purified text whitch does not have any email addresses
-    """    
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None, None
 
     return re.subn(EMAIL_PATTERN, r'', text)
+
+
+def blank_checker(text: Optional[str]) -> Optional[bool]:
+    """
+    Checkes the given text is composed space, \t, \r, and \n.
+
+    Args:
+        text (Optional[str]): a text can  be empty
+
+    Returns:
+        Optional[bool]: a boolean value that shows whether the given text is empty or not.
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    if re.search(BLANK_PATTERN, text):
+        return True
+    else:
+        return False
+
 
 # Expanding contractions
 contractions_dict = {
