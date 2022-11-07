@@ -1,7 +1,7 @@
 """Module providing utils code for cleaning users text data."""
 # ───────────────────────────────── Imports ────────────────────────────────── #
 # Standard Library
-from typing import Tuple, Optional, Union, Callable, Any
+from typing import Tuple, Optional, Union, Callable, Any, List
 import re
 
 # 3rd Party
@@ -61,7 +61,7 @@ def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         html_text (Optional[str]): a text variable may contain HTML tags
 
     Returns:
-        Tuple[str, int]: (purified text accoding to HTML tags, the number of matches)
+        Tuple[str, int]: (the purified text accoding to HTML tags, the number of matches)
     """
     # Input checking
     if pd.isnull(html_text):
@@ -132,7 +132,7 @@ def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         text (Optional[str]): a text may contain multiple types of characters
 
     Returns:
-        Tuple[Optional[str], Optional[int]]: (purified text according to any characters, the number of matches)
+        Tuple[Optional[str], Optional[int]]: (the purified text according to any characters, the number of matches)
     """
     # Input checking
     if pd.isnull(text):
@@ -205,7 +205,7 @@ def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         text (Optional[str]): a text that may contain multiple URLS
 
     Returns:
-        Tuple[Optional[str], Optional[int]]: a purified string that does not have any URLs
+        Tuple[Optional[str], Optional[int]]: (the purified string that does not have any URLs, the number of matches)
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -223,7 +223,7 @@ def remove_twitter_username(text: Optional[str]) -> Tuple[Optional[str], Optiona
         text (Optional[str]): a text that may contain multiple usernames
 
     Returns:
-        Tuple[Optional[str], Optional[int]]: purified text whitch doesnt have any twitter username
+        Tuple[Optional[str], Optional[int]]: (the purified text doesn't have any twitter username, the number of matches)
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -241,7 +241,7 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         text (Optional[str]): a text that may contain multiple usernames
 
     Returns:
-        Tuple[Optional[str], Optional[int]]: purified text whitch doesnt have any username
+        Tuple[Optional[str], Optional[int]]: (the purified text doesn't have any username, the number of matches)
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -259,7 +259,7 @@ def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         text (Optional[str]): a text that may contain multiple hashtags
 
     Returns:
-        Tuple[Optional[str], Optional[int]]: purified text whitch doesnt have any hashtag
+        Tuple[Optional[str], Optional[int]]: (the purified text doesn't have any hashtag, the number of matches)
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -276,7 +276,7 @@ def remove_email_address(text: Optional[str]) -> Tuple[Optional[str], Optional[i
         text (Optional[str]): a text that may contain multiple email addresses
 
     Returns:
-        Tuple[Optional[str], Optional[int]]: purified text whitch does not have any email addresses
+        Tuple[Optional[str], Optional[int]]: (the purified text  does not have any email addresses, the number of matches)
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -303,6 +303,30 @@ def blank_checker(text: Optional[str]) -> Optional[bool]:
         return True
     else:
         return False
+
+
+def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) -> Tuple[Optional[str], Optional[int]]:
+    """
+    Removes special characters through the input list from the given text
+
+    Args:
+        text (Optional[str]): a gien text
+        special_char (Optional[List[str]]): a list contains special characters
+
+    Returns:
+        Tuple[Optional[str], Optional[int]]: (the purified text does not have the given characters, the number of matches)
+    """    
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
+
+    if not isinstance(special_char, List):
+        return text, None
+
+    if len(special_char) == 0:
+        return text, None
+
+    return re.subn("|".join(special_char), r"", text)
 
 
 # Expanding contractions

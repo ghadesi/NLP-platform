@@ -17,4 +17,5 @@ from nlp_utils.preprocessing.text_preprocessing import remove_username
 from nlp_utils.preprocessing.text_preprocessing import remove_hashtag
 from nlp_utils.preprocessing.text_preprocessing import remove_email_address
 from nlp_utils.preprocessing.text_preprocessing import blank_checker
+from nlp_utils.preprocessing.text_preprocessing import remove_special_char
 from nlp_utils.preprocessing.text_preprocessing import main_contraction
