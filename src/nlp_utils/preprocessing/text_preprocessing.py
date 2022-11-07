@@ -51,6 +51,8 @@ EMAIL_PATTERN = re.compile(r"([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)")
 
 BLANK_PATTERN = re.compile(r"^\s*$")
 
+CONS_DUPLICATION_PATTERN = re.compile(r"\b(\w+)( \1\b)+", flags=re.IGNORECASE)
+
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
@@ -146,13 +148,13 @@ def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
 
 def remove_all_duplication(text: Optional[str]) -> Optional[str]:
     """
-    Removes all duplicate words from a string and just maintains the first one
+    Removes all duplicate words from the given string and just maintains the first one
 
     Args:
         text (Optional[str]): a text may contain multiple words that are the same
 
     Returns:
-        str: purified text that does not contain duplicate words
+        str: the purified text that does not contain duplicated words
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -161,6 +163,22 @@ def remove_all_duplication(text: Optional[str]) -> Optional[str]:
     # lower_case_text = to_lower(text)
     tokenize_text = text.split()
     return " ".join(sorted(set(tokenize_text), key=tokenize_text.index))
+
+
+def remove_consecutive_duplication(text: Optional[str]) -> Optional[str]:
+    """
+    Removes consecutive duplicate words from the given text
+    Args:
+        text (Optional[str]): a text may contain the same words 
+
+    Returns:
+        Optional[str]: the purified text that does not contain consecutive duplicated words
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    return re.sub(CONS_DUPLICATION_PATTERN, r'\1', text)
 
 
 def remove_many_spaces(text: Optional[str]) -> Optional[str]:
@@ -315,7 +333,7 @@ def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) 
 
     Returns:
         Tuple[Optional[str], Optional[int]]: (the purified text does not have the given characters, the number of matches)
-    """    
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None, None

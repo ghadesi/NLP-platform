@@ -14,6 +14,7 @@ from nlp_utils.preprocessing.text_preprocessing import to_lower
 from nlp_utils.preprocessing.text_preprocessing import remove_number
 from nlp_utils.preprocessing.text_preprocessing import remove_any_char
 from nlp_utils.preprocessing.text_preprocessing import remove_all_duplication
+from nlp_utils.preprocessing.text_preprocessing import remove_consecutive_duplication
 from nlp_utils.preprocessing.text_preprocessing import remove_many_spaces
 from nlp_utils.preprocessing.text_preprocessing import remove_emoji
 from nlp_utils.preprocessing.text_preprocessing import remove_url
@@ -136,8 +137,22 @@ class TestDuplication:
             (None, None)
         ],
     )
-    def test_remove_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_all_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_all_duplication(input_text)
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expectation mismatch."
+
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            ("Hello hello", "Hello"),
+            ("this is just is is", "this is just is"),
+            ("this just so So so nice", "this just so nice"),
+            (None, None)
+        ],
+    )
+    def test_consecutive_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
+        result_text = remove_consecutive_duplication(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
