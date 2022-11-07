@@ -21,6 +21,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_twitter_username
 from nlp_utils.preprocessing.text_preprocessing import remove_username
 from nlp_utils.preprocessing.text_preprocessing import remove_hashtag
 from nlp_utils.preprocessing.text_preprocessing import remove_email_address
+from nlp_utils.preprocessing.text_preprocessing import remove_special_char
 from nlp_utils.preprocessing.text_preprocessing import blank_checker
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
@@ -99,6 +100,22 @@ class TestCharacter:
     def test_remove_chars(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_any_char(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
+        assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
+
+    @pytest.mark.parametrize(
+        "input_text, input_spec_char, ex_output_text, ex_num_matches",
+        [
+            ("Hello, ¿the first char is ٪ and these onces《 》!٪", ["٪", "《", "》", "¿"], "Hello, the first char is  and these onces !", 5),
+            ("Hello, ", None, "Hello, ", None),
+            (None, None, None, None),
+        ],
+    )
+    def test_remove_special_chars(self, input_text: Optional[str], input_spec_char: Optional[List[str]], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
+
+        result_text, result_matches = remove_special_char(input_text, input_spec_char)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."

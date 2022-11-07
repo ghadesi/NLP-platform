@@ -294,3 +294,5 @@ NLP*
 !src/*
 !src/nlp_utils/*
 !tests/*
+src/nlp_utils/preprocessing/__pycache__/*
+src/nlp_utils/preprocessing/__pycache__/*
