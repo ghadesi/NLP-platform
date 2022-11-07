@@ -290,4 +290,6 @@ settings*
 NLP*
 .git*
 *
-!src
+!src/*
+!src/nlp_utils/*
+!tests/*

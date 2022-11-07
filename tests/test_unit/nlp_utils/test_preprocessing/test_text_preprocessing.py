@@ -21,6 +21,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_twitter_username
 from nlp_utils.preprocessing.text_preprocessing import remove_username
 from nlp_utils.preprocessing.text_preprocessing import remove_hashtag
 from nlp_utils.preprocessing.text_preprocessing import remove_email_address
+from nlp_utils.preprocessing.text_preprocessing import blank_checker
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -243,3 +244,20 @@ class TestEmailAddress:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
+
+
+class TestChecker:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            ("\t Hello", False),
+            ("      ", True),
+            ("\t", True),
+            ("\n \n", True),
+            (None, None)
+        ],
+    )
+    def test_blank(self, input_text: Optional[str], ex_output: Optional[bool]):
+        result = blank_checker(input_text)
+        assert isinstance(result, (bool, type(None))), "The output text is not string."
+        assert result == ex_output, "Expectation mismatch."
