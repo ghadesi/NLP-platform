@@ -123,7 +123,7 @@ class TestCharacter:
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
 
-class TestDuplication:
+class TestDuplication: 
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -145,13 +145,13 @@ class TestDuplication:
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
-            ("Hello hello", "Hello"),
+            ("Hello hello", "Hello0"),
             ("this is just is is", "this is just is"),
             ("this just so So so nice", "this just so nice"),
             (None, None)
         ],
     )
-    def test_consecutive_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_consecutive_duplication(self, input_text: Optional[str], ex_output: Optional[str]):   
         result_text = remove_consecutive_duplication(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
