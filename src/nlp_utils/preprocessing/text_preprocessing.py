@@ -1,21 +1,19 @@
 """Module providing utils code for cleaning users text data."""
 # ───────────────────────────────── Imports ────────────────────────────────── #
 # Standard Library
-import re
 from typing import Any, Callable, List, Literal, Optional, Set, Tuple, Union
 import numpy as np
 import pandas as pd
 import string
+import re
 
 # 3rd Party
-from langdetect import detect
+from langdetect import detect, detect_langs
 from nltk.corpus import stopwords as nltk_sw
-from spacy.language import Language
-import spacy
-from emot.emo_unicode import UNICODE_EMO, EMOTICONS
-from emot.emo_unicode import UNICODE_EMOJI
-from emot.emo_unicode import EMOTICONS_EMO
+from emot.emo_unicode import UNICODE_EMOJI, EMOTICONS_EMO
 import contractions
+import spacy
+from spacy.language import Language
 
 # Private
 
@@ -77,6 +75,271 @@ BLANK_PATTERN = re.compile(r"^\s*$")
 
 CONS_DUPLICATION_PATTERN = re.compile(r"\b(\w+)( \1\b)+", flags=re.IGNORECASE)
 
+# Typos, slang and other
+SAMPLE_TYPOS_SLANG = {
+    "w/e": "whatever",
+    "usagov": "usa government",
+    "recentlu": "recently",
+    "ph0tos": "photos",
+    "amirite": "am i right",
+    "exp0sed": "exposed",
+    "<3": "love",
+    "luv": "love",
+    "amageddon": "armageddon",
+    "trfc": "traffic",
+    "16yr": "16 year"
+}
+
+# Acronyms
+SAMPLE_ACRONYMS = {
+    "mh370": "malaysia airlines flight 370",
+    "okwx": "oklahoma city weather",
+    "arwx": "arkansas weather",
+    "gawx": "georgia weather",
+    "scwx": "south carolina weather",
+    "cawx": "california weather",
+    "tnwx": "tennessee weather",
+    "azwx": "arizona weather",
+    "alwx": "alabama weather",
+    "usnwsgov": "united states national weather service",
+    "2mw": "tomorrow"
+}
+
+# Some common abbreviations
+SAMPLE_ABBR = {
+    "$": " dollar ",
+    "€": " euro ",
+    "4ao": "for adults only",
+    "a.m": "before midday",
+    "a3": "anytime anywhere anyplace",
+    "aamof": "as a matter of fact",
+    "acct": "account",
+    "adih": "another day in hell",
+    "afaic": "as far as i am concerned",
+    "afaict": "as far as i can tell",
+    "afaik": "as far as i know",
+    "afair": "as far as i remember",
+    "afk": "away from keyboard",
+    "app": "application",
+    "approx": "approximately",
+    "apps": "applications",
+    "asap": "as soon as possible",
+    "asl": "age, sex, location",
+    "atk": "at the keyboard",
+    "ave.": "avenue",
+    "aymm": "are you my mother",
+    "ayor": "at your own risk",
+    "b&b": "bed and breakfast",
+    "b+b": "bed and breakfast",
+    "b.c": "before christ",
+    "b2b": "business to business",
+    "b2c": "business to customer",
+    "b4": "before",
+    "b4n": "bye for now",
+    "b@u": "back at you",
+    "bae": "before anyone else",
+    "bak": "back at keyboard",
+    "bbbg": "bye bye be good",
+    "bbc": "british broadcasting corporation",
+    "bbias": "be back in a second",
+    "bbl": "be back later",
+    "bbs": "be back soon",
+    "be4": "before",
+    "bfn": "bye for now",
+    "blvd": "boulevard",
+    "bout": "about",
+    "brb": "be right back",
+    "bros": "brothers",
+    "brt": "be right there",
+    "bsaaw": "big smile and a wink",
+    "btw": "by the way",
+    "bwl": "bursting with laughter",
+    "c/o": "care of",
+    "cet": "central european time",
+    "cf": "compare",
+    "cia": "central intelligence agency",
+    "csl": "can not stop laughing",
+    "cu": "see you",
+    "cul8r": "see you later",
+    "cv": "curriculum vitae",
+    "cwot": "complete waste of time",
+    "cya": "see you",
+    "cyt": "see you tomorrow",
+    "dae": "does anyone else",
+    "dbmib": "do not bother me i am busy",
+    "diy": "do it yourself",
+    "dm": "direct message",
+    "dwh": "during work hours",
+    "e123": "easy as one two three",
+    "eet": "eastern european time",
+    "eg": "example",
+    "embm": "early morning business meeting",
+    "encl": "enclosed",
+    "encl.": "enclosed",
+    "etc": "and so on",
+    "faq": "frequently asked questions",
+    "fawc": "for anyone who cares",
+    "fb": "facebook",
+    "fc": "fingers crossed",
+    "fig": "figure",
+    "fimh": "forever in my heart",
+    "ft.": "feet",
+    "ft": "featuring",
+    "ftl": "for the loss",
+    "ftw": "for the win",
+    "fwiw": "for what it is worth",
+    "fyi": "for your information",
+    "g9": "genius",
+    "gahoy": "get a hold of yourself",
+    "gal": "get a life",
+    "gcse": "general certificate of secondary education",
+    "gfn": "gone for now",
+    "gg": "good game",
+    "gl": "good luck",
+    "glhf": "good luck have fun",
+    "gmt": "greenwich mean time",
+    "gmta": "great minds think alike",
+    "gn": "good night",
+    "g.o.a.t": "greatest of all time",
+    "goat": "greatest of all time",
+    "goi": "get over it",
+    "gps": "global positioning system",
+    "gr8": "great",
+    "gratz": "congratulations",
+    "gyal": "girl",
+    "h&c": "hot and cold",
+    "hp": "horsepower",
+    "hr": "hour",
+    "hrh": "his royal highness",
+    "ht": "height",
+    "ibrb": "i will be right back",
+    "ic": "i see",
+    "icq": "i seek you",
+    "icymi": "in case you missed it",
+    "idc": "i do not care",
+    "idgadf": "i do not give a damn fuck",
+    "idgaf": "i do not give a fuck",
+    "idk": "i do not know",
+    "ie": "that is",
+    "i.e": "that is",
+    "ifyp": "i feel your pain",
+    "IG": "instagram",
+    "iirc": "if i remember correctly",
+    "ilu": "i love you",
+    "ily": "i love you",
+    "imho": "in my humble opinion",
+    "imo": "in my opinion",
+    "imu": "i miss you",
+    "iow": "in other words",
+    "irl": "in real life",
+    "j4f": "just for fun",
+    "jic": "just in case",
+    "jk": "just kidding",
+    "jsyk": "just so you know",
+    "l8r": "later",
+    "lb": "pound",
+    "lbs": "pounds",
+    "ldr": "long distance relationship",
+    "lmao": "laugh my ass off",
+    "lmfao": "laugh my fucking ass off",
+    "lol": "laughing out loud",
+    "ltd": "limited",
+    "ltns": "long time no see",
+    "m8": "mate",
+    "mf": "motherfucker",
+    "mfs": "motherfuckers",
+    "mfw": "my face when",
+    "mofo": "motherfucker",
+    "mph": "miles per hour",
+    "mr": "mister",
+    "mrw": "my reaction when",
+    "ms": "miss",
+    "mte": "my thoughts exactly",
+    "nagi": "not a good idea",
+    "nbc": "national broadcasting company",
+    "nbd": "not big deal",
+    "nfs": "not for sale",
+    "ngl": "not going to lie",
+    "nhs": "national health service",
+    "nrn": "no reply necessary",
+    "nsfl": "not safe for life",
+    "nsfw": "not safe for work",
+    "nth": "nice to have",
+    "nvr": "never",
+    "nyc": "new york city",
+    "oc": "original content",
+    "og": "original",
+    "ohp": "overhead projector",
+    "oic": "oh i see",
+    "omdb": "over my dead body",
+    "omg": "oh my god",
+    "omw": "on my way",
+    "p.a": "per annum",
+    "p.m": "after midday",
+    "pm": "prime minister",
+    "poc": "people of color",
+    "pov": "point of view",
+    "pp": "pages",
+    "ppl": "people",
+    "prw": "parents are watching",
+    "ps": "postscript",
+    "pt": "point",
+    "ptb": "please text back",
+    "pto": "please turn over",
+    "qpsa": "what happens",  # "que pasa",
+    "ratchet": "rude",
+    "rbtl": "read between the lines",
+    "rlrt": "real life retweet",
+    "rofl": "rolling on the floor laughing",
+    "roflol": "rolling on the floor laughing out loud",
+    "rotflmao": "rolling on the floor laughing my ass off",
+    "rt": "retweet",
+    "ruok": "are you ok",
+    "sfw": "safe for work",
+    "sk8": "skate",
+    "smh": "shake my head",
+    "sq": "square",
+    "srsly": "seriously",
+    "ssdd": "same stuff different day",
+    "tbh": "to be honest",
+    "tbs": "tablespooful",
+    "tbsp": "tablespooful",
+    "tfw": "that feeling when",
+    "thks": "thank you",
+    "tho": "though",
+    "thx": "thank you",
+    "tia": "thanks in advance",
+    "til": "today i learned",
+    "tl;dr": "too long i did not read",
+    "tldr": "too long i did not read",
+    "tmb": "tweet me back",
+    "tntl": "trying not to laugh",
+    "ttyl": "talk to you later",
+    "u": "you",
+    "u2": "you too",
+    "u4e": "yours for ever",
+    "utc": "coordinated universal time",
+    "w/": "with",
+    "w/o": "without",
+    "w8": "wait",
+    "wassup": "what is up",
+    "wb": "welcome back",
+    "wtf": "what the fuck",
+    "wtg": "way to go",
+    "wtpa": "where the party at",
+    "wuf": "where are you from",
+    "wuzup": "what is up",
+    "wywh": "wish you were here",
+    "yd": "yard",
+    "ygtr": "you got that right",
+    "ynk": "you never know",
+    "zzz": "sleeping bored and tired"
+}
+
+SAMPLE_TYPOS_SLANG_PATTERN = re.compile(r'(?<!\w)(' + '|'.join(re.escape(key) for key in SAMPLE_TYPOS_SLANG.keys()) + r')(?!\w)')
+SAMPLE_ACRONYMS_PATTERN = re.compile(r'(?<!\w)(' + '|'.join(re.escape(key) for key in SAMPLE_ACRONYMS.keys()) + r')(?!\w)')
+SAMPLE_ABBR_PATTERN = re.compile(r'(?<!\w)(' + '|'.join(re.escape(key) for key in SAMPLE_ABBR.keys()) + r')(?!\w)')
+
 # Expanding contractions
 CONTRACTIONS_DIC = {
     "ain't": "am not", "aren't": "are not", "can't": "cannot", "can't've": "cannot have", "'cause": "because",
@@ -113,7 +376,7 @@ def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     that contains the purified text and the number of matches.
 
     Args:
-        html_text (Optional[str]): a text variable may contain HTML tags
+        html_text (Optional[str]): a text that may contain HTML tags
 
     Returns:
         Tuple[str, int]: (the purified text accoding to HTML tags, the number of matches)
@@ -405,17 +668,17 @@ def expand_contractions(text: Optional[str]) -> Optional[str]:
     """
     Contractions are words or combinations of words that are shortened by dropping letters and replacing them with an apostrophe. 
     With this function, we are going to convert the text into the standard form.
-    
+
     Args:
         text (Optional[str]): a text that may contain shortened forms of words
 
     Returns:
         Optional[str]: A converted text in which shortened words are transferred to a standard shape. 
-    """    
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
-    
+
     def expand_match(contraction):
         match = contraction.group(0)
         first_char = match[0]
@@ -444,7 +707,7 @@ def convert_to_unicode(text: Optional[Any], encoding: str = "utf-8") -> Optional
         encoding (str, optional): The type of encoding. Defaults to "utf-8".
 
     Returns:
-         Optional[str]: a variable in a string format
+         Optional[str]: a text in the string format
     """
     if isinstance(text, str):
         return text
@@ -536,18 +799,73 @@ def nltk_stopwords(Prefare_lang: Optional[List[str]]) -> Optional[Set[str]]:
     return stopwords
 
 
-def language_detection(text: str) -> Optional[str]:
-    # https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
-    # https://github.com/Mimino666/langdetect
+def language_detection(text: Optional[str]) -> Optional[str]:
+    """
+    To detect the language of the text. The method returns a single language 
+    name which has the highest probability.
+
+    Note: 
+    Language detection algorithm is non-deterministic, which means that if 
+    we try to run it on a text which is either too short or too ambiguous, we 
+    might get different results everytime you run it.
+
+    see more:
+    https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
+    https://github.com/Mimino666/langdetect
+
+    Args:
+        text (Optional[str]): a given that that can be in any language
+
+    Returns:
+        Optional[str]: a single language abbreviation which has the highest probability.
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
+
     return detect(text)
 
 
-def lang_converter_spacy(lang: Optional[str]) -> Optional[str]:
-    # Language support https://spacy.io/usage/models#languages
-    if lang is None:
+def language_prob_detection(text: Optional[str]) -> Optional[List[Tuple[str, float]]]:
+    """
+    To find out the probabilities for the top languages.
+
+    Note: 
+    Language detection algorithm is non-deterministic, which means that if 
+    we try to run it on a text which is either too short or too ambiguous, we 
+    might get different results everytime you run it.
+
+    see more:
+    https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
+    https://github.com/Mimino666/langdetect
+
+    Args:
+        text (Optional[str]): a given that that can be in any language
+
+    Returns:
+        Optional[List[Tuple[str, float]]]: a list of multiple languages and their probabilities.
+    """
+
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    return detect_langs(text)
+
+
+def lang_conv_spacy(lang: Optional[str]) -> Optional[str]:
+    """
+    This function maps the name of the language into its corresponding abbreviation form. 
+    I have to mention that Spacy doesn't support ISO-639-1 (https://github.com/noumar/iso639).
+
+    Args:
+        lang (Optional[str]): the name of the language
+
+    Returns:
+        Optional[str]: the abbreviation form of a language
+    """
+    # Input checking
+    if pd.isnull(lang) or not isinstance(lang, str):
         return None
 
     dic_lang = {"Catalan": "ca", "Chinese": "zh", "Croatian": "hr", "Danish": "da", "Dutch": "nl", "English": "en", "Finnish": "fi", "French": "fr", "German": "de", "Greek": "el", "Italian": "it", "Japanese": "ja", "Korean": "ko",
@@ -559,7 +877,20 @@ def lang_converter_spacy(lang: Optional[str]) -> Optional[str]:
         return None
 
 
-def model_source_spacy(lang_abb: Optional[str]) -> Optional[str]:
+def pipeline_source_selector_spacy(lang_abb: Optional[str]) -> Optional[str]:
+    """
+    Returns a proper source for the specified language.
+
+    Args:
+        lang_abb (Optional[str]): the language abbreviation that Spacy supports
+
+    Returns:
+        Optional[str]: a proper source based on the given language
+    """
+    # Input checking
+    if pd.isnull(lang_abb) or not isinstance(lang_abb, str):
+        return None
+
     web_source = ["zh", "en"]
     news_source = ["ca", "hr", "da", "nl", "fi", "fr", "de", "el", "it", "ja", "ko", "lt", "mk", "nb", "pl", "pt", "ro", "ru", "es", "sv", "uk"]
     wiki_source = ["xx"]
@@ -576,331 +907,123 @@ def model_source_spacy(lang_abb: Optional[str]) -> Optional[str]:
     return selected_source
 
 
-def model_size_str_conv_spacy(model_size: Literal["small", "medium", "large", "transformer"]) -> Optional[str]:
+def pipeline_size_str_conv_spacy(pipeline_size: Literal["small", "medium", "large", "transformer"]) -> Optional[str]:
+    """
+    Converts the pipeline size w.r.t the Spacy specifications
 
-    if model_size == "small":
+    Args:
+        pipeline_size (Literal["small", "medium", "large", "transformer"]): acceptable pipeline size
+
+    Returns:
+        Optional[str]: the abbreviation form of the pipeline size
+    """
+    # Input checking
+    if pd.isnull(pipeline_size) or not isinstance(pipeline_size, str):
+        return None
+
+    if pipeline_size == "small":
         return "sm"
-    elif model_size == "medium":
+    elif pipeline_size == "medium":
         return "md"
-    elif model_size == "large":
+    elif pipeline_size == "large":
         return "lg"
-    elif model_size == "transformer":
+    elif pipeline_size == "transformer":
         return "trf"
     else:
         return None
 
 
-def model_selector_spacy(pref_lang: Optional[str], pref_model_size: Literal["small", "medium", "large", "transformer"]) -> Optional[Language]:
+def pipeline_selector_spacy(pref_lang: Optional[str], pref_pipeline_size: Literal["small", "medium", "large", "transformer"]) -> Optional[Language]:
+    """
+    Returns a Spacy language pipeline based on the input specifications.
+    https://spacy.io/usage/models#languages
 
-    model_lang = lang_converter_spacy(pref_lang)
-    if model_lang is None:
+    Args:
+        pref_lang (Optional[str]): a preferable language
+        pref_pipeline_size (Literal["small", "medium", "large", "transformer"]): a preferable size of the pipeline
+
+    Returns:
+        Optional[Language]: a Spacy language pipeline
+    """
+    pipeline_lang = lang_conv_spacy(pref_lang)
+    if pipeline_lang is None:
         # Spacy doen't support this language
         return None
 
-    model_source = model_source_spacy(model_lang)
-    if model_source is None:
+    pipeline_source = pipeline_source_selector_spacy(pipeline_lang)
+    if pipeline_source is None:
         # Spacy doen't have this pretrained model
         return None
 
-    model_size = model_size_str_conv_spacy(pref_model_size)
-    if model_size is None:
+    pipeline_size = pipeline_size_str_conv_spacy(pref_pipeline_size)
+    if pipeline_size is None:
         # Spacy doen't support the given size
         return None
 
-    model_name = str(model_lang + "_core_" + model_source + "_" + model_size)
+    pipeline_name = str(pipeline_lang + "_core_" + pipeline_source + "_" + pipeline_size)
 
     try:
-        nlp_model = spacy.load(model_name)
+        nlp_pipeline = spacy.load(pipeline_name)
     except:
-        spacy.cli.download(model_name)
+        spacy.cli.download(pipeline_name)
     finally:
-        nlp_model = spacy.load(model_name)
+        nlp_pipeline = spacy.load(pipeline_name)
 
-    return nlp_model
-
-
-def remove_emoticons(text: str) -> Optional[str]:
-
-    return re.sub(EMOTICON_PATTERN, r'', text)
+    return nlp_pipeline
 
 
-def abbreviation_converter(text):
-    # Typos, slang and other
-    sample_typos_slang = {
-        "w/e": "whatever",
-        "usagov": "usa government",
-        "recentlu": "recently",
-        "ph0tos": "photos",
-        "amirite": "am i right",
-        "exp0sed": "exposed",
-        "<3": "love",
-        "luv": "love",
-        "amageddon": "armageddon",
-        "trfc": "traffic",
-        "16yr": "16 year"
-    }
+def remove_emoticons(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+    """
+        Removes all emoticons from the given text
 
-    # Acronyms
-    sample_acronyms = {
-        "mh370": "malaysia airlines flight 370",
-        "okwx": "oklahoma city weather",
-        "arwx": "arkansas weather",
-        "gawx": "georgia weather",
-        "scwx": "south carolina weather",
-        "cawx": "california weather",
-        "tnwx": "tennessee weather",
-        "azwx": "arizona weather",
-        "alwx": "alabama weather",
-        "usnwsgov": "united states national weather service",
-        "2mw": "tomorrow"
-    }
+    Args:
+        text (Optional[str]): a text which contains multiple emoticons
 
-    # Some common abbreviations
-    sample_abbr = {
-        "$": " dollar ",
-        "€": " euro ",
-        "4ao": "for adults only",
-        "a.m": "before midday",
-        "a3": "anytime anywhere anyplace",
-        "aamof": "as a matter of fact",
-        "acct": "account",
-        "adih": "another day in hell",
-        "afaic": "as far as i am concerned",
-        "afaict": "as far as i can tell",
-        "afaik": "as far as i know",
-        "afair": "as far as i remember",
-        "afk": "away from keyboard",
-        "app": "application",
-        "approx": "approximately",
-        "apps": "applications",
-        "asap": "as soon as possible",
-        "asl": "age, sex, location",
-        "atk": "at the keyboard",
-        "ave.": "avenue",
-        "aymm": "are you my mother",
-        "ayor": "at your own risk",
-        "b&b": "bed and breakfast",
-        "b+b": "bed and breakfast",
-        "b.c": "before christ",
-        "b2b": "business to business",
-        "b2c": "business to customer",
-        "b4": "before",
-        "b4n": "bye for now",
-        "b@u": "back at you",
-        "bae": "before anyone else",
-        "bak": "back at keyboard",
-        "bbbg": "bye bye be good",
-        "bbc": "british broadcasting corporation",
-        "bbias": "be back in a second",
-        "bbl": "be back later",
-        "bbs": "be back soon",
-        "be4": "before",
-        "bfn": "bye for now",
-        "blvd": "boulevard",
-        "bout": "about",
-        "brb": "be right back",
-        "bros": "brothers",
-        "brt": "be right there",
-        "bsaaw": "big smile and a wink",
-        "btw": "by the way",
-        "bwl": "bursting with laughter",
-        "c/o": "care of",
-        "cet": "central european time",
-        "cf": "compare",
-        "cia": "central intelligence agency",
-        "csl": "can not stop laughing",
-        "cu": "see you",
-        "cul8r": "see you later",
-        "cv": "curriculum vitae",
-        "cwot": "complete waste of time",
-        "cya": "see you",
-        "cyt": "see you tomorrow",
-        "dae": "does anyone else",
-        "dbmib": "do not bother me i am busy",
-        "diy": "do it yourself",
-        "dm": "direct message",
-        "dwh": "during work hours",
-        "e123": "easy as one two three",
-        "eet": "eastern european time",
-        "eg": "example",
-        "embm": "early morning business meeting",
-        "encl": "enclosed",
-        "encl.": "enclosed",
-        "etc": "and so on",
-        "faq": "frequently asked questions",
-        "fawc": "for anyone who cares",
-        "fb": "facebook",
-        "fc": "fingers crossed",
-        "fig": "figure",
-        "fimh": "forever in my heart",
-        "ft.": "feet",
-        "ft": "featuring",
-        "ftl": "for the loss",
-        "ftw": "for the win",
-        "fwiw": "for what it is worth",
-        "fyi": "for your information",
-        "g9": "genius",
-        "gahoy": "get a hold of yourself",
-        "gal": "get a life",
-        "gcse": "general certificate of secondary education",
-        "gfn": "gone for now",
-        "gg": "good game",
-        "gl": "good luck",
-        "glhf": "good luck have fun",
-        "gmt": "greenwich mean time",
-        "gmta": "great minds think alike",
-        "gn": "good night",
-        "g.o.a.t": "greatest of all time",
-        "goat": "greatest of all time",
-        "goi": "get over it",
-        "gps": "global positioning system",
-        "gr8": "great",
-        "gratz": "congratulations",
-        "gyal": "girl",
-        "h&c": "hot and cold",
-        "hp": "horsepower",
-        "hr": "hour",
-        "hrh": "his royal highness",
-        "ht": "height",
-        "ibrb": "i will be right back",
-        "ic": "i see",
-        "icq": "i seek you",
-        "icymi": "in case you missed it",
-        "idc": "i do not care",
-        "idgadf": "i do not give a damn fuck",
-        "idgaf": "i do not give a fuck",
-        "idk": "i do not know",
-        "ie": "that is",
-        "i.e": "that is",
-        "ifyp": "i feel your pain",
-        "IG": "instagram",
-        "iirc": "if i remember correctly",
-        "ilu": "i love you",
-        "ily": "i love you",
-        "imho": "in my humble opinion",
-        "imo": "in my opinion",
-        "imu": "i miss you",
-        "iow": "in other words",
-        "irl": "in real life",
-        "j4f": "just for fun",
-        "jic": "just in case",
-        "jk": "just kidding",
-        "jsyk": "just so you know",
-        "l8r": "later",
-        "lb": "pound",
-        "lbs": "pounds",
-        "ldr": "long distance relationship",
-        "lmao": "laugh my ass off",
-        "lmfao": "laugh my fucking ass off",
-        "lol": "laughing out loud",
-        "ltd": "limited",
-        "ltns": "long time no see",
-        "m8": "mate",
-        "mf": "motherfucker",
-        "mfs": "motherfuckers",
-        "mfw": "my face when",
-        "mofo": "motherfucker",
-        "mph": "miles per hour",
-        "mr": "mister",
-        "mrw": "my reaction when",
-        "ms": "miss",
-        "mte": "my thoughts exactly",
-        "nagi": "not a good idea",
-        "nbc": "national broadcasting company",
-        "nbd": "not big deal",
-        "nfs": "not for sale",
-        "ngl": "not going to lie",
-        "nhs": "national health service",
-        "nrn": "no reply necessary",
-        "nsfl": "not safe for life",
-        "nsfw": "not safe for work",
-        "nth": "nice to have",
-        "nvr": "never",
-        "nyc": "new york city",
-        "oc": "original content",
-        "og": "original",
-        "ohp": "overhead projector",
-        "oic": "oh i see",
-        "omdb": "over my dead body",
-        "omg": "oh my god",
-        "omw": "on my way",
-        "p.a": "per annum",
-        "p.m": "after midday",
-        "pm": "prime minister",
-        "poc": "people of color",
-        "pov": "point of view",
-        "pp": "pages",
-        "ppl": "people",
-        "prw": "parents are watching",
-        "ps": "postscript",
-        "pt": "point",
-        "ptb": "please text back",
-        "pto": "please turn over",
-        "qpsa": "what happens",  # "que pasa",
-        "ratchet": "rude",
-        "rbtl": "read between the lines",
-        "rlrt": "real life retweet",
-        "rofl": "rolling on the floor laughing",
-        "roflol": "rolling on the floor laughing out loud",
-        "rotflmao": "rolling on the floor laughing my ass off",
-                    "rt": "retweet",
-                    "ruok": "are you ok",
-                    "sfw": "safe for work",
-                    "sk8": "skate",
-                    "smh": "shake my head",
-                    "sq": "square",
-                    "srsly": "seriously",
-                    "ssdd": "same stuff different day",
-                    "tbh": "to be honest",
-                    "tbs": "tablespooful",
-                    "tbsp": "tablespooful",
-                    "tfw": "that feeling when",
-                    "thks": "thank you",
-                    "tho": "though",
-                    "thx": "thank you",
-                    "tia": "thanks in advance",
-                    "til": "today i learned",
-                    "tl;dr": "too long i did not read",
-                    "tldr": "too long i did not read",
-                    "tmb": "tweet me back",
-                    "tntl": "trying not to laugh",
-                    "ttyl": "talk to you later",
-                    "u": "you",
-                    "u2": "you too",
-                    "u4e": "yours for ever",
-                    "utc": "coordinated universal time",
-                    "w/": "with",
-                    "w/o": "without",
-                    "w8": "wait",
-                    "wassup": "what is up",
-                    "wb": "welcome back",
-                    "wtf": "what the fuck",
-                    "wtg": "way to go",
-                    "wtpa": "where the party at",
-                    "wuf": "where are you from",
-                    "wuzup": "what is up",
-                    "wywh": "wish you were here",
-                    "yd": "yard",
-                    "ygtr": "you got that right",
-                    "ynk": "you never know",
-                    "zzz": "sleeping bored and tired"
-    }
+    Returns:
+        Tuple[Optional[str], Optional[int]]: (the purified text does not have any emoticons, the number of matches)
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None, None
 
-    sample_typos_slang_pattern = re.compile(r'(?<!\w)(' + '|'.join(re.escape(key) for key in sample_typos_slang.keys()) + r')(?!\w)')
-    sample_acronyms_pattern = re.compile(r'(?<!\w)(' + '|'.join(re.escape(key) for key in sample_acronyms.keys()) + r')(?!\w)')
-    sample_abbr_pattern = re.compile(r'(?<!\w)(' + '|'.join(re.escape(key) for key in sample_abbr.keys()) + r')(?!\w)')
+    return re.subn(EMOTICON_PATTERN, r'', text)
 
-    text = sample_typos_slang_pattern.sub(lambda x: sample_typos_slang[x.group()], text)
-    text = sample_acronyms_pattern.sub(lambda x: sample_acronyms[x.group()], text)
-    text = sample_abbr_pattern.sub(lambda x: sample_abbr[x.group()], text)
+
+def abbreviation_converter(text: Optional[str]) -> Optional[str]:
+    """
+    Converts abbreviation forms of the input text into the normal shape.
+
+    Args:
+        text (Optional[str]): a text with abbreviation forms of words
+
+    Returns:
+        Optional[str]: a converted text without any abbreviation
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    text = re.sub(SAMPLE_TYPOS_SLANG_PATTERN, lambda x: SAMPLE_TYPOS_SLANG[x.group()], text)
+    text = re.sub(SAMPLE_ACRONYMS_PATTERN, lambda x: SAMPLE_ACRONYMS[x.group()], text)
+    text = re.sub(SAMPLE_ABBR_PATTERN, lambda x: SAMPLE_ABBR[x.group()], text)
 
     return text
 
 
-def remove_punctuation(text):
+def remove_punctuation(text: Optional[str]) -> Optional[str]:
     """
-        Remove the punctuation
+    Remove the punctuations from the given text
+
+    Args:
+        text (Optional[str]): a text that may contain punctuation
+
+    Returns:
+        Optional[str]: a purified string that does not have any punctuation
     """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
     return text.translate(str.maketrans('', '', string.punctuation))
 
 # TODO: add specific character remove
@@ -913,7 +1036,7 @@ def remove_punctuation(text):
 # TODO: Chat Words Conversion
 # TODO: Spelling Correction
 # TODO: camelcase
-# TODO: Convert the abbriviation of countries to the standard shape
+# TODO: Convert the abbreviation of countries to the standard shape
 
 # full_stopwords_set = set.union(set(custom_extended_stopwords), set(stopwords.words("english")))
 # from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
