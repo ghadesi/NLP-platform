@@ -10,6 +10,7 @@ import re
 # 3rd Party
 from langdetect import detect, detect_langs
 from nltk.corpus import stopwords as nltk_sw
+import nltk
 from emot.emo_unicode import UNICODE_EMOJI, EMOTICONS_EMO
 import contractions
 import spacy
@@ -717,7 +718,8 @@ def convert_to_unicode(text: Optional[Any], encoding: str = "utf-8") -> Optional
         return None
 
 
-def stop_words():
+def stop_words_spacy():
+    # TODO: NOT finished!
     # Download multi language files
     # python - m spacy download xx_ent_wiki_sm
     # python -m spacy download xx_sent_ud_sm
@@ -766,37 +768,49 @@ def stop_words():
     print('Number of stop words: %d' % len(spacy_stopwords))
 
 
-def nltk_stopwords(Prefare_lang: Optional[List[str]]) -> Optional[Set[str]]:
+def stopwords_nltk(pref_lang_lst: Optional[List[str]]) -> Optional[Set[str]]:
+    """
+    Returns a set that contains all stop words in NLTK based on the given language list.
 
+    Args:
+        pref_lang_lst (Optional[List[str]]): a list of languages
+
+    Returns:
+        Optional[Set[str]]: a set of all stop words w.r.t the given languages
+    """
     # Input checking
-    if pd.isnull(Prefare_lang) or not isinstance(Prefare_lang, (Set, List)):
+    if isinstance(pref_lang_lst, str):
+        # The input is in string format, instead of list or set
+        pref_lang_lst = [pref_lang_lst]
+    elif pd.isnull(pref_lang_lst) or not isinstance(pref_lang_lst, (Set, List)):
+        return None
+    if len(pref_lang_lst) == 0:
         return None
 
-    if len(Prefare_lang) == 0:
-        return None
+    NLTK_sup_lang = set(nltk_sw.fileids())
+    pref_lang_lst_lower_case = [lang.lower().strip() for lang in pref_lang_lst]
+    pref_lang_set = set(pref_lang_lst_lower_case)
 
-    Prefare_lang_set = set(Prefare_lang)
-    NLTK_support_language = set(nltk_sw.fileids())
-
-    if Prefare_lang_set.issubset(NLTK_support_language):
-        total_lang = Prefare_lang_set
-    elif Prefare_lang_set - NLTK_support_language:
-        total_lang = Prefare_lang_set.intersection(NLTK_support_language)
+    # Check the intersection between two sets: NLTK_sup_lang and pref_lang_set
+    if pref_lang_set.issubset(NLTK_sup_lang):
+        total_lang = pref_lang_set
+    elif pref_lang_set - NLTK_sup_lang:
+        total_lang = pref_lang_set.intersection(NLTK_sup_lang)
     else:
+        # There is no intersection between sets
         return None
 
-    stopwords = set()
-    # try:
-    #     stop_words = nltk_sw.words("en")
-    # except LookupError:
-    #     nltk_sw.download('stopwords')
-    # finally:
-    #     stop_words = nltk_sw.words(stp_lang)
+    stop_words = set()
 
-    for language in total_lang:
-        stopwords = stopwords.union(set(nltk_sw.words(language)))
+    try:
+        stop_words = nltk_sw.words("english")
+    except LookupError:
+        nltk.download('stopwords')
+    finally:
+        for language in total_lang:
+            stop_words = stop_words.union(set(nltk_sw.words(language)))
 
-    return stopwords
+    return stop_words
 
 
 def language_detection(text: Optional[str]) -> Optional[str]:
@@ -1037,6 +1051,7 @@ def remove_punctuation(text: Optional[str]) -> Optional[str]:
 # TODO: Spelling Correction
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
+# TODO: User add RE and replace text
 
 # full_stopwords_set = set.union(set(custom_extended_stopwords), set(stopwords.words("english")))
 # from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
