@@ -813,6 +813,25 @@ def stopwords_nltk(pref_lang_lst: Optional[List[str]]) -> Optional[Set[str]]:
     return stop_words
 
 
+def remove_stopwords(text: Optional[str], stopwords: Set) -> Optional[str]:
+    """
+    Removes all stopwords from the given text
+
+    Args:
+        text (Optional[str]): a text may contain stopwords
+        stopwords (Set): the desired stopwords set based on a specific language/s
+        
+    Returns:
+        Optional[str]: a purified text w/o any stopwords
+    """    
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+    if pd.isnull(stopwords) or not isinstance(stopwords, Set):
+        return None
+    
+    return " ".join([word for word in str(text).split() if word not in stopwords])
+
 def language_detection(text: Optional[str]) -> Optional[str]:
     """
     To detect the language of the text. The method returns a single language 
