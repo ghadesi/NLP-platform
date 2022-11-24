@@ -15,6 +15,7 @@ from emot.emo_unicode import UNICODE_EMOJI, EMOTICONS_EMO
 import contractions
 import spacy
 from spacy.language import Language
+from autocorrect import Speller
 
 # Private
 
@@ -820,17 +821,18 @@ def remove_stopwords(text: Optional[str], stopwords: Set) -> Optional[str]:
     Args:
         text (Optional[str]): a text may contain stopwords
         stopwords (Set): the desired stopwords set based on a specific language/s
-        
+
     Returns:
         Optional[str]: a purified text w/o any stopwords
-    """    
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
     if pd.isnull(stopwords) or not isinstance(stopwords, Set):
         return None
-    
+
     return " ".join([word for word in str(text).split() if word not in stopwords])
+
 
 def language_detection(text: Optional[str]) -> Optional[str]:
     """
@@ -1063,14 +1065,99 @@ def remove_punctuation(text: Optional[str]) -> Optional[str]:
 # TODO: give re and apply that
 # TODO: some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
 # TODO: stemming and lemmatization
-# TODO: Conversion of Emoticon to Words
-# TODO: Conversion of Emoji to Words
+# TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
+# TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
 # TODO: remove xml precisely BeautifulSoup
 # TODO: Chat Words Conversion
 # TODO: Spelling Correction
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: User add RE and replace text
-
+# TODO: Stemming and Lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
+# TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
+# TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
 # full_stopwords_set = set.union(set(custom_extended_stopwords), set(stopwords.words("english")))
 # from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
+
+# from spellchecker import SpellChecker
+# https://github.com/barrust/pyspellchecker
+
+# spell = SpellChecker()
+
+#  def correct_spellings(text):
+#     corrected_text = []
+#     misspelled_words = spell.unknown(text.split())
+#     for word in text.split():
+#         if word in misspelled_words:
+#             corrected_text.append(spell.correction(word))
+#         else:
+#             corrected_text.append(word)
+#     return " ".join(corrected_text)
+
+
+class Spell_checker_v1():
+    """
+    This is spell correction class and supports 12 languages including: English, Polish, Turkish, Russian, Ukrainian, Czech, Portuguese, Greek,
+    # Italian, Vietnamese, French and Spanish. However, we can easily add new languages.
+
+    Reference: https://github.com/filyp/autocorrect
+    """
+
+    def __init__(self, lang: str = "en", speed: bool = False) -> None:
+        """
+        Constructs all the necessary attributes for spell checker object.
+
+        Note: Now, the correction should always work in microseconds, 
+        but words with double typos won't be corrected.
+
+        Args:
+            lang (str, optional): _description_. Defaults to "en".
+            speed (bool, optional): _description_. Defaults to False.
+        """
+        # The below languages are supported by the Autocorrect library.
+        self.lang_dic = {
+            "english": "en",
+            "polish": "pl",
+            "russian": "ru",
+            "ukrainian": "uk",
+            "turkish": "tr",
+            "spanish": "es",
+            "portuguese": "pt",
+            "czech": "cs",
+            "greek": "el",
+            "italian": "it",
+            "french": "fr",
+            "vietnamese": "vi"
+        }
+        
+        if pd.isnull(lang) or not isinstance(lang, str):
+            self.lang = None
+        elif len(lang) < 3:
+            # We know that lang is in the abbriviation form
+            self.lang = self._lang_checker(lang)
+        else:
+            self.lang = self._lang_conversion(lang)
+
+        self.speed = speed
+        self.speller = Speller(lang=self.lang, fast=self.speed)
+
+    def _lang_checker(self, lang: str):
+        if lang in self.lang_dic.values():
+            return lang
+        else:
+            return None
+
+    def _lang_conversion(self, lang: str) -> Optional[str]:
+        if lang not in self.lang_dic:
+            return None
+        else:
+            return self.lang_dic[lang]
+
+    def autocorrect_sentence(self, text: Optional[str]) -> Optional[str]:
+        # Input checking
+        if pd.isnull(text) or not isinstance(text, str):
+            return None
+
+        return self.speller(text)
+
+    __call__ = autocorrect_sentence
