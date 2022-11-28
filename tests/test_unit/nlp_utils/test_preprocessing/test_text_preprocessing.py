@@ -25,6 +25,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_email_address
 from nlp_utils.preprocessing.text_preprocessing import remove_special_char
 from nlp_utils.preprocessing.text_preprocessing import blank_checker
 from nlp_utils.preprocessing.text_preprocessing import remove_punctuation
+from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -35,7 +36,7 @@ class TestHTML:
             ("""<html lang="en" class="notranslate" translate="no" data-theme="light"><HEAD> This is HEAD <INSIDE> The is inside tag </INSIDE></HEAD> <BODY> This is BODY </BODY></HTML>""",
              " This is HEAD  The is inside tag   This is BODY ", 8),
             ("Hello world!", "Hello world!", 0),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_xml_HTML_tags(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -96,7 +97,7 @@ class TestCharacter:
         "input_text, ex_output_text, ex_num_matches",
         [
             ("!&  Hel_lo *@ $world!(", "  Hello  world", 8),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_any_char(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -111,8 +112,8 @@ class TestCharacter:
         "input_text, input_spec_char, ex_output_text, ex_num_matches",
         [
             ("Hello, ¿the first char is ٪ and these onces《 》!٪", ["٪", "《", "》", "¿"], "Hello, the first char is  and these onces !", 5),
-            ("Hello, ", None, "Hello, ", None),
-            (None, None, None, None),
+            ("Hello, ", None, "Hello, ", 0),
+            (None, None, None, 0),
         ],
     )
     def test_remove_special_char(self, input_text: Optional[str], input_spec_char: Optional[List[str]], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -185,20 +186,37 @@ class TestDuplication:
         assert result_text == ex_output, "Expectation mismatch."
 
 
-class TestEmpji:
+class TestEmpjiEmoticons:
     @pytest.mark.parametrize(
-        "input_text, ex_output",
+        "input_text, ex_output, ex_num_matches",
         [
-            ("RT @ kaastore: 😁 un sourire=un cadeau 🎁", "RT @ kaastore:  un sourire=un cadeau "),
-            (None, None),
+            ("RT @ kaastore: 😁 un sourire=un cadeau 🎁", "RT @ kaastore:  un sourire=un cadeau ", 2),
+            (None, None, 0),
         ],
     )
-    def test_remove_emojis(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_emoji(self, input_text: Optional[str], ex_output: Optional[str], ex_num_matches: Optional[int]):
 
-        result_text = remove_emoji(input_text)
+        result_text, result_matches = remove_emoji(input_text)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
-        assert result_text == ex_output, "Expectation mismatch."
+        assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
+        assert result_text == ex_output and result_matches == ex_num_matches, "Expectation mismatch."
+
+    @pytest.mark.parametrize(
+        "input_text, ex_output, ex_num_matches",
+        [
+            ("Hello :)", "Hello ", 1),
+            ("Hello :-)", "Hello ", 1),
+            (None, None, 0),
+        ],
+    )
+    def test_remove_emoticon(self, input_text: Optional[str], ex_output: Optional[str], ex_num_matches: Optional[int]):
+
+        result_text, result_matches = remove_emoticon(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
+        assert result_text == ex_output and result_matches == ex_num_matches, "Expectation mismatch."
 
 
 class TestURL:
@@ -208,7 +226,7 @@ class TestURL:
             ("My website is https://www.twanda.com/apps/details?id=com.skgames.trafficracer%22", "My website is ", 1),
             ("My websites are https://www.google.com and www.turintech.ai", "My websites are  and ", 2),
             ("Look at these links: www.my.com:8069/tf/details?id=com.j.o%22 and ftp://amazon.com/g/G/e/2011/u-3.jpg", "Look at these links:  and ", 2),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_url(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -228,7 +246,7 @@ class TestUsername:
              "RT :        If interested, the Devoxx Belgium CFP opens en…", 8),
             ("@probablyfaketwitterusername @RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a ",
              "@probablyfaketwitterusername  is answering to , this is a real '' but this is an@email.com, and this is a ", 3),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_twitter_username(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -246,7 +264,7 @@ class TestUsername:
              "RT :        If interested, the Devoxx Belgium CFP opens en…", 8),
             ("@probablyfaketwitterusername @RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a ",
              "  is answering to , this is a real '' but this is an@email.com, and this is a ", 4),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_username_any(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -267,7 +285,7 @@ class TestHashtag:
             ("text #hashtag! text  #hashtag1 #hash_tagüäö text #hash0ta #hash_tag", "text ! text    text  ", 5),
             ("#хэш_тег #中英字典 #مهسا_امینی Not hashtags text #1234", "   Not hashtags text ", 4),
             ("", "", 0),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_hashtag(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
@@ -288,7 +306,7 @@ class TestEmailAddress:
             ("type3: amin.cs@gmal.com", "type3: ", 1),
             ("type4: am_ghad@gmail.com", "type4: ", 1),
             ("", "", 0),
-            (None, None, None),
+            (None, None, 0),
         ],
     )
     def test_remove_email_address(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
