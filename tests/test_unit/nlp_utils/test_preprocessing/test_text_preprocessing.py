@@ -115,7 +115,7 @@ class TestCharacter:
             (None, None, None, None),
         ],
     )
-    def test_remove_special_chars(self, input_text: Optional[str], input_spec_char: Optional[List[str]], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
+    def test_remove_special_char(self, input_text: Optional[str], input_spec_char: Optional[List[str]], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_special_char(input_text, input_spec_char)
 
@@ -146,7 +146,7 @@ class TestDuplication:
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
-            ("Hello hello", "Hello0"),
+            ("Hello hello", "Hello"),
             ("this is just is is", "this is just is"),
             ("this just so So so nice", "this just so nice"),
             (None, None)
@@ -191,11 +191,12 @@ class TestURL:
         "input_text, ex_output_text, ex_num_matches",
         [
             ("My website is https://www.twanda.com/apps/details?id=com.skgames.trafficracer%22", "My website is ", 1),
+            ("My websites are https://www.google.com and www.turintech.ai", "My websites are  and ", 2),
             ("Look at these links: www.my.com:8069/tf/details?id=com.j.o%22 and ftp://amazon.com/g/G/e/2011/u-3.jpg", "Look at these links:  and ", 2),
             (None, None, None),
         ],
     )
-    def test_remove_urls(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
+    def test_remove_url(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_url(input_text)
 
