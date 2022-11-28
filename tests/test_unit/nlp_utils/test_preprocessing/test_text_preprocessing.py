@@ -26,6 +26,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_special_char
 from nlp_utils.preprocessing.text_preprocessing import blank_checker
 from nlp_utils.preprocessing.text_preprocessing import remove_punctuation
 from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
+from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -333,3 +334,22 @@ class TestChecker:
         result = blank_checker(input_text)
         assert isinstance(result, (bool, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
+
+
+class TestConversion:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            # https://www.slicktext.com/blog/2019/02/text-abbreviations-guide/
+            ("the top FAQ are", "the top FAQ are"),
+            ("the top faq are", "the top frequently asked questions are"),
+            (None, None)
+        ],
+    )
+    def test_abbreviation_converter(self, input_text: Optional[str], ex_output: Optional[str]):
+        
+        result_text = abbreviation_converter(input_text)
+        print("salam ", result_text)
+        
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expectation mismatch."

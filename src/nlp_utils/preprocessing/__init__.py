@@ -21,3 +21,4 @@ from nlp_utils.preprocessing.text_preprocessing import blank_checker
 from nlp_utils.preprocessing.text_preprocessing import remove_special_char
 from nlp_utils.preprocessing.text_preprocessing import remove_punctuation
 from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
+from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
