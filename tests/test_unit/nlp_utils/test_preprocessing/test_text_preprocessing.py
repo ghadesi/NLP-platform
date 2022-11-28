@@ -24,6 +24,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_hashtag
 from nlp_utils.preprocessing.text_preprocessing import remove_email_address
 from nlp_utils.preprocessing.text_preprocessing import remove_special_char
 from nlp_utils.preprocessing.text_preprocessing import blank_checker
+from nlp_utils.preprocessing.text_preprocessing import remove_punctuation
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -163,7 +164,7 @@ class TestDuplication:
             (None, None)
         ],
     )
-    def test_many_spaces(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_many_spaces(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_many_spaces(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
