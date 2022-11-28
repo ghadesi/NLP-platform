@@ -99,7 +99,7 @@ class TestCharacter:
             (None, None, None),
         ],
     )
-    def test_remove_chars(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
+    def test_remove_any_char(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_any_char(input_text)
 
