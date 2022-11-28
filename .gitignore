@@ -302,3 +302,4 @@ tests/test_unit/nlp_utils/test_preprocessing/__pycache__/*
 Finel_NLP.py
 src/nlp_utils/preprocessing/__pycache__/__init__.cpython-39.pyc
 src/nlp_utils/preprocessing/__pycache__/text_preprocessing.cpython-39.pyc
+tests/test_unit/nlp_utils/test_preprocessing/__pycache__/test_text_preprocessing.cpython-39-pytest-7.2.0.pyc

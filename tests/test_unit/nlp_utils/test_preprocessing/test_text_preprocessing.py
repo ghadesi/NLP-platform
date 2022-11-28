@@ -123,8 +123,22 @@ class TestCharacter:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "input_text, ex_output_text",
+        [
+            ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"", "James Hi Thomas I havent seen you for ages How have you been"),
+            (None, None),
+        ],
+    )
+    def test_remove_punctuation(self, input_text: Optional[str], ex_output_text: Optional[str]):
 
-class TestDuplication: 
+        result_text = remove_punctuation(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output_text, "Expectation mismatch."
+
+
+class TestDuplication:
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -152,7 +166,7 @@ class TestDuplication:
             (None, None)
         ],
     )
-    def test_remove_consecutive_duplication(self, input_text: Optional[str], ex_output: Optional[str]):   
+    def test_remove_consecutive_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_consecutive_duplication(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
