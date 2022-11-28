@@ -521,7 +521,7 @@ def remove_many_spaces(text: Optional[str]) -> Optional[str]:
     return re.sub(SPACE_PATTERN, r" ", text)
 
 
-def remove_emoji(text: Optional[str]) -> Optional[str]:
+def remove_emoji(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes any emojis in the given text. 
     http://www.unicode.org/Public/emoji/1.0//emoji-data.txt
@@ -530,13 +530,13 @@ def remove_emoji(text: Optional[str]) -> Optional[str]:
         text (Optional[str]): a text that may contain multiple emojis
 
     Returns:
-        Optional[str]: a purified string that does not have any emojis
+        Tuple[Optional[str], Optional[int]]: (a purified string that does not have any emojis, the number of matches)
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None
+        return None, 0
 
-    return re.sub(EMOJI_PATTERN, r'', text)
+    return re.subn(EMOJI_PATTERN, r'', text)
 
 
 def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
@@ -1012,7 +1012,7 @@ def pipeline_selector_spacy(pref_lang: Optional[str], pref_pipeline_size: Litera
     return nlp_pipeline
 
 
-def remove_emoticons(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
+def remove_emoticon(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
         Removes all emoticons from the given text
 
