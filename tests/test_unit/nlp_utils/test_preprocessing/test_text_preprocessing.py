@@ -295,7 +295,7 @@ class TestChecker:
             (None, None)
         ],
     )
-    def test_blank(self, input_text: Optional[str], ex_output: Optional[bool]):
+    def test_blank_checker(self, input_text: Optional[str], ex_output: Optional[bool]):
         result = blank_checker(input_text)
         assert isinstance(result, (bool, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
