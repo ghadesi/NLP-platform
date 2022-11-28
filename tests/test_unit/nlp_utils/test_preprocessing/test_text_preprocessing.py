@@ -127,6 +127,7 @@ class TestCharacter:
         "input_text, ex_output_text",
         [
             ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"", "James Hi Thomas I havent seen you for ages How have you been"),
+            ("!hi. wh?at is the weat[h]er lik?e.", "hi what is the weather like"),
             (None, None),
         ],
     )
