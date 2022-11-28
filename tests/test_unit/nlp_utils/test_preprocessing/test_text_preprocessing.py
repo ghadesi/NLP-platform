@@ -38,7 +38,7 @@ class TestHTML:
             (None, None, None),
         ],
     )
-    def test_remove_HTML_tags(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
+    def test_remove_xml_HTML_tags(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_xml(input_text)
 
