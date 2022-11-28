@@ -85,7 +85,7 @@ class TestNumbers:
             (None, None)
         ],
     )
-    def test_remove_numbers(self, input_text: Optional[str], ex_output: Optional[str]):
+    def test_remove_number(self, input_text: Optional[str], ex_output: Optional[str]):
         result_text = remove_number(input_text)
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
