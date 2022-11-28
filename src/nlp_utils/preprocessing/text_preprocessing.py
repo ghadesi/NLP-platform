@@ -390,10 +390,10 @@ def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     # Input checking
     if pd.isnull(html_text):
-        return None, None
+        return None, 0
 
     if not isinstance(html_text, str):
-        return None, None
+        return None, 0
 
     return re.subn(XML_PATTERN, r"", html_text)
 
@@ -461,10 +461,10 @@ def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     # Input checking
     if pd.isnull(text):
-        return None, None
+        return None, 0
 
     if not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(CHAR_PATTERN, r"", text, re.I | re.A)
 
@@ -551,7 +551,7 @@ def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(URL_PATTERN, r'', text)
 
@@ -569,7 +569,7 @@ def remove_twitter_username(text: Optional[str]) -> Tuple[Optional[str], Optiona
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(TWITTER_USERNAME_PATTERN, r'', text)
 
@@ -587,7 +587,7 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(ANY_USERNAME_PATTERN, r'', text)
 
@@ -605,7 +605,7 @@ def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(HASHTAG_PATTERN, r'', text)
 
@@ -622,7 +622,7 @@ def remove_email_address(text: Optional[str]) -> Tuple[Optional[str], Optional[i
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(EMAIL_PATTERN, r'', text)
 
@@ -660,13 +660,13 @@ def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) 
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     if not isinstance(special_char, List):
-        return text, None
+        return text, 0
 
     if len(special_char) == 0:
-        return text, None
+        return text, 0
 
     return re.subn("|".join(special_char), r"", text)
 
@@ -1024,7 +1024,7 @@ def remove_emoticon(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
-        return None, None
+        return None, 0
 
     return re.subn(EMOTICON_PATTERN, r'', text)
 
