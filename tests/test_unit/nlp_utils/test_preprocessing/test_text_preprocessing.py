@@ -349,7 +349,6 @@ class TestConversion:
     def test_abbreviation_converter(self, input_text: Optional[str], ex_output: Optional[str]):
         
         result_text = abbreviation_converter(input_text)
-        print("salam ", result_text)
         
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
