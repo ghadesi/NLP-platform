@@ -233,7 +233,7 @@ class TestUsername:
             (None, None, None),
         ],
     )
-    def test_remove_any_username(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
+    def test_remove_username_any(self, input_text: Optional[str], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_username(input_text)
 
