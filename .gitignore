@@ -299,3 +299,6 @@ tests/__pycache__/*
 tests/test_unit/__pycache__/*
 tests/test_unit/nlp_utils/__pycache__/*
 tests/test_unit/nlp_utils/test_preprocessing/__pycache__/*
+Finel_NLP.py
+src/nlp_utils/preprocessing/__pycache__/__init__.cpython-39.pyc
+src/nlp_utils/preprocessing/__pycache__/text_preprocessing.cpython-39.pyc

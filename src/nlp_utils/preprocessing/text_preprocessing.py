@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import string
 import re
+import pickle
 
 # 3rd Party
 from langdetect import detect, detect_langs
@@ -47,7 +48,11 @@ EMOJI_PATTERN = re.compile("["
                            "]+", flags=re.UNICODE)
 
 # Thanks : https://github.com/NeelShah18/emot/blob/master/emot/emo_unicode.py
-EMOTICON_PATTERN = re.compile(u'(' + u'|'.join(k for k in EMOTICONS_EMO) + u')')
+# EMOTICON_PATTERN = re.compile(u'(' + u'|'.join(k for k in EMOTICONS_EMO) + u')')
+# https://medium.com/geekculture/text-preprocessing-how-to-handle-emoji-emoticon-641bbfa6e9e7
+with open('./assets/Emoticon_Dict.p', 'rb') as emoticon_file:
+    Emoticon_Dict = pickle.load(emoticon_file)
+EMOTICON_PATTERN = re.compile(u'(' + u'|'.join(k for k in Emoticon_Dict) + u')')
 
 
 URL_PATTERN = re.compile(r"(ftp://|smtp://|SMTP://|http://|https://|http://www\.|https://www\.|www\.)?"
@@ -1129,7 +1134,7 @@ class Spell_checker_v1():
             "french": "fr",
             "vietnamese": "vi"
         }
-        
+
         if pd.isnull(lang) or not isinstance(lang, str):
             self.lang = None
         elif len(lang) < 3:
