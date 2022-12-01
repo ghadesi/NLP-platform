@@ -23,3 +23,4 @@ from nlp_utils.preprocessing.text_preprocessing import remove_punctuation
 from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
 from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 from nlp_utils.preprocessing.text_preprocessing import convert_to_unicode
+from nlp_utils.preprocessing.text_preprocessing import expand_contractions

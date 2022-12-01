@@ -28,6 +28,7 @@ from nlp_utils.preprocessing.text_preprocessing import remove_punctuation
 from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
 from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 from nlp_utils.preprocessing.text_preprocessing import convert_to_unicode
+from nlp_utils.preprocessing.text_preprocessing import expand_contractions
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -332,9 +333,9 @@ class TestChecker:
         ],
     )
     def test_blank_checker(self, input_text: Optional[str], ex_output: Optional[bool]):
-        
+
         result = blank_checker(input_text)
-        
+
         assert isinstance(result, (bool, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
 
@@ -347,11 +348,11 @@ class TestChecker:
         ],
     )
     def test_convert_to_unicode(self, input_text: Optional[str], ex_output: Optional[bool]):
-        
+
         result = convert_to_unicode(input_text)
-        
+
         print("salam ", result)
-        
+
         assert isinstance(result, (bool, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
 
@@ -369,6 +370,23 @@ class TestConversion:
     def test_abbreviation_converter(self, input_text: Optional[str], ex_output: Optional[str]):
 
         result_text = abbreviation_converter(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expectation mismatch."
+
+
+class TestExpantion:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            ("I'm Amin.", "I am Amin."),
+            ("It's a book.", "it is a book."),
+            (None, None)
+        ],
+    )
+    def test_expand_contractions(self, input_text: Optional[str], ex_output: Optional[str]):
+
+        result_text = expand_contractions(input_text)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
