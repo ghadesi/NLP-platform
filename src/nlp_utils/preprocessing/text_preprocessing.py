@@ -17,6 +17,7 @@ import contractions
 import spacy
 from spacy.language import Language
 from autocorrect import Speller
+from gensim import utils
 
 # Private
 
@@ -716,12 +717,14 @@ def convert_to_unicode(text: Optional[Any], encoding: str = "utf-8") -> Optional
     Returns:
          Optional[str]: a text in the string format
     """
-    if isinstance(text, str):
-        return text
-    elif isinstance(text, bytes):
-        return text.decode(encoding, "ignore")
-    else:
-        return None
+    # if isinstance(text, str):
+    #     return text
+    # elif isinstance(text, bytes):
+    #     return text.decode(encoding, "ignore")
+    # else:
+    #     return None
+    
+    return utils.to_unicode(text)
 
 
 def stop_words_spacy():
