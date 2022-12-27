@@ -283,7 +283,6 @@
 # # Random arbitrary not-really-a-config file,
 # # for use with hexdump
 # !.config/hexdump.format
-
 .DS*
 launch*
 settings*
@@ -293,13 +292,17 @@ NLP*
 !src
 !src/*
 !src/nlp_utils/*
+!src/nlp_utils/ml/*
 # !tests/*
+!assets/
+!assets/*
+!datasets/
+!datasets/*
 src/nlp_utils/__pycache__/__init__.cpython-39.pyc
 tests/__pycache__/*
 tests/test_unit/__pycache__/*
 tests/test_unit/nlp_utils/__pycache__/*
 tests/test_unit/nlp_utils/test_preprocessing/__pycache__/*
-Finel_NLP.py
 src/nlp_utils/preprocessing/__pycache__/__init__.cpython-39.pyc
 src/nlp_utils/preprocessing/__pycache__/text_preprocessing.cpython-39.pyc
 tests/test_unit/nlp_utils/test_preprocessing/__pycache__/test_text_preprocessing.cpython-39-pytest-7.2.0.pyc
