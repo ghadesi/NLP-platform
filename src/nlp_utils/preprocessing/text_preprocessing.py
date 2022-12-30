@@ -389,6 +389,11 @@ def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
     Eliminates the HTML tags from the given text and returns a tuple
     that contains the purified text and the number of matches.
+    
+    Alternatively, you can use the following code:
+        from bs4 import BeautifulSoup
+        def remove_xml_v2(text):
+            return BeautifulSoup(text, "lxml").text
 
     Args:
         html_text (Optional[str]): a text that may contain HTML tags
@@ -499,7 +504,7 @@ def remove_all_duplication(text: Optional[str]) -> Optional[str]:
 def remove_consecutive_duplication(text: Optional[str]) -> Optional[str]:
     """
     Removes consecutive duplicate words from the given text
-    
+
     Args:
         text (Optional[str]): a text may contain the same words 
 
@@ -533,7 +538,7 @@ def remove_many_spaces(text: Optional[str]) -> Optional[str]:
 def remove_emoji(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes any emojis in the given text. 
-    
+
     See more:
         http://www.unicode.org/Public/emoji/1.0//emoji-data.txt
 
@@ -606,7 +611,7 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
 def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes hashtagh from the given text. This function supports multilanguage hashtags. 
-    
+
     Example: 
         https://regex101.com/r/SxRara/1
 
@@ -990,7 +995,7 @@ def pipeline_size_str_conv_spacy(pipeline_size: Literal["small", "medium", "larg
 def pipeline_selector_spacy(pref_lang: Optional[str], pref_pipeline_size: Literal["small", "medium", "large", "transformer"]) -> Optional[Language]:
     """
     Returns a Spacy language pipeline based on the input specifications.
-    
+
     See more: 
         https://spacy.io/usage/models#languages
 
@@ -1086,7 +1091,7 @@ def remove_punctuation(text: Optional[str]) -> Optional[str]:
 def to_lemmatize(text: Optional[str]) -> Optional[str]:
     """
     Perform lemmatization for the given text.
-    
+
     Note:
         Lemmatization is the process of converting a word to its base form. The difference between stemming and lemmatization is, 
         lemmatization considers the context and converts the word to its meaningful base form, whereas stemming just removes 
@@ -1097,13 +1102,14 @@ def to_lemmatize(text: Optional[str]) -> Optional[str]:
 
     Returns:
         Optional[str]: a lemmatized text
-    """    
+    """
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
 
     pos_tagged_text = nltk.pos_tag(text.split())
     return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text])
+
 
 def to_tokenize(text: Optional[str]) -> Optional[List[str]]:
     """
@@ -1121,6 +1127,7 @@ def to_tokenize(text: Optional[str]) -> Optional[List[str]]:
 
     # alternative: return re.split('\W+', text)
     return nltk.word_tokenize(text)
+
 
 def regex_validation_checker(regex: Optional[str]) -> bool:
     """
@@ -1142,6 +1149,7 @@ def regex_validation_checker(regex: Optional[str]) -> bool:
     except re.error:
         return False
 
+
 def remove_regex_match(text: Optional[str], regex: Optional[str]) -> Optional[str]:
     """
     Removes the given regular expression from the given text.
@@ -1159,7 +1167,7 @@ def remove_regex_match(text: Optional[str], regex: Optional[str]) -> Optional[st
 
     if pd.isnull(regex) or not isinstance(regex, str):
         return None
-    
+
     if not regex_validation_checker(regex):
         return None
 
@@ -1181,22 +1189,24 @@ def substitue_regex_match(text: Optional[str], regex: Optional[str], sub_text: O
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
-    
+
     if pd.isnull(sub_text) or not isinstance(sub_text, str):
         return None
-    
+
     if pd.isnull(regex) or not isinstance(regex, str):
         return None
-    
+
     if not regex_validation_checker(regex):
         return None
 
     return re.sub(regex, sub_text, text)
 
 
-# TODO: add specific character remove
-# TODO: give re and apply that
+
+# TODO: [Done] add specific character remove
+# TODO: [Done] give re and apply that
 # TODO: some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
+# TODO: [Done] User add RE and replace text
 # TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
 # TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
@@ -1205,9 +1215,9 @@ def substitue_regex_match(text: Optional[str], regex: Optional[str], sub_text: O
 # TODO: Spelling Correction
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
-# TODO: User add RE and replace text
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
+
 # full_stopwords_set = set.union(set(custom_extended_stopwords), set(stopwords.words("english")))
 # from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
