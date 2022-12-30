@@ -21,6 +21,7 @@ from gensim import utils
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # Private
 
@@ -835,7 +836,9 @@ def stopwords_nltk(pref_lang_lst: Optional[List[str]]) -> Optional[Set[str]]:
         for language in total_lang:
             stop_words = stop_words.union(set(nltk_sw.words(language)))
 
-    return stop_words
+    full_stopwords_set = set.union(set(custom_extended_stopwords), set(stop_words))
+    
+    return full_stopwords_set
 
 
 def remove_stopwords(text: Optional[str], stopwords: Set) -> Optional[str]:
@@ -852,6 +855,7 @@ def remove_stopwords(text: Optional[str], stopwords: Set) -> Optional[str]:
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
+    
     if pd.isnull(stopwords) or not isinstance(stopwords, Set):
         return None
 
@@ -1202,24 +1206,20 @@ def substitue_regex_match(text: Optional[str], regex: Optional[str], sub_text: O
     return re.sub(regex, sub_text, text)
 
 
-
+# TODO: [Done] remove xml precisely BeautifulSoup
 # TODO: [Done] add specific character remove
 # TODO: [Done] give re and apply that
-# TODO: some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
 # TODO: [Done] User add RE and replace text
 # TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
 # TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
-# TODO: remove xml precisely BeautifulSoup
 # TODO: Chat Words Conversion
 # TODO: Spelling Correction
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
-
-# full_stopwords_set = set.union(set(custom_extended_stopwords), set(stopwords.words("english")))
-# from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
+# TODO: some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
 
 # from spellchecker import SpellChecker
 # https://github.com/barrust/pyspellchecker
