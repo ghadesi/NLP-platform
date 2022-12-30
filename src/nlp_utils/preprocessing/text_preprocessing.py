@@ -18,11 +18,12 @@ import spacy
 from spacy.language import Language
 from autocorrect import Speller
 from gensim import utils
+from nltk.corpus import wordnet
+from nltk.stem import WordNetLemmatizer
 
 # Private
 
 # ───────────────────────────────── Code ────────────────────────────────── #
-
 # Using re.compile() and saving the resulting regular expression object for
 # reuse is more efficient when the expression will be used several times in a
 # single program
@@ -377,6 +378,11 @@ CONTRACTIONS_DIC = {
 }
 CONTRACTIONS_PATTERN = re.compile('({})'.format('|'.join(CONTRACTIONS_DIC.keys())), flags=re.IGNORECASE | re.DOTALL)
 
+# For lemmatization, we need to provide the POS tag of the word along with the word.
+# Depending on the POS, the lemmatizer may return different results.
+lemmatizer = WordNetLemmatizer()
+wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "J": wordnet.ADJ, "R": wordnet.ADV}  # Pos tag, used Noun, Verb, Adjective and Adverb
+
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
@@ -492,6 +498,7 @@ def remove_all_duplication(text: Optional[str]) -> Optional[str]:
 def remove_consecutive_duplication(text: Optional[str]) -> Optional[str]:
     """
     Removes consecutive duplicate words from the given text
+    
     Args:
         text (Optional[str]): a text may contain the same words 
 
@@ -525,7 +532,9 @@ def remove_many_spaces(text: Optional[str]) -> Optional[str]:
 def remove_emoji(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes any emojis in the given text. 
-    http://www.unicode.org/Public/emoji/1.0//emoji-data.txt
+    
+    See more:
+        http://www.unicode.org/Public/emoji/1.0//emoji-data.txt
 
     Args:
         text (Optional[str]): a text that may contain multiple emojis
@@ -596,7 +605,9 @@ def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
 def remove_hashtag(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
     Removes hashtagh from the given text. This function supports multilanguage hashtags. 
-    Example: https://regex101.com/r/SxRara/1
+    
+    Example: 
+        https://regex101.com/r/SxRara/1
 
     Args:
         text (Optional[str]): a text that may contain multiple hashtags
@@ -723,7 +734,7 @@ def convert_to_unicode(text: Optional[Any], encoding: str = "utf-8") -> Optional
     #     return text.decode(encoding, "ignore")
     # else:
     #     return None
-    
+
     return utils.to_unicode(text)
 
 
@@ -848,13 +859,13 @@ def language_detection(text: Optional[str]) -> Optional[str]:
     name which has the highest probability.
 
     Note: 
-    Language detection algorithm is non-deterministic, which means that if 
-    we try to run it on a text which is either too short or too ambiguous, we 
-    might get different results everytime you run it.
+        Language detection algorithm is non-deterministic, which means that if 
+        we try to run it on a text which is either too short or too ambiguous, we 
+        might get different results everytime you run it.
 
-    see more:
-    https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
-    https://github.com/Mimino666/langdetect
+    See more:
+        https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
+        https://github.com/Mimino666/langdetect
 
     Args:
         text (Optional[str]): a given that that can be in any language
@@ -874,13 +885,13 @@ def language_prob_detection(text: Optional[str]) -> Optional[List[Tuple[str, flo
     To find out the probabilities for the top languages.
 
     Note: 
-    Language detection algorithm is non-deterministic, which means that if 
-    we try to run it on a text which is either too short or too ambiguous, we 
-    might get different results everytime you run it.
+        Language detection algorithm is non-deterministic, which means that if 
+        we try to run it on a text which is either too short or too ambiguous, we 
+        might get different results everytime you run it.
 
-    see more:
-    https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
-    https://github.com/Mimino666/langdetect
+    See more:
+        https://code.google.com/archive/p/language-detection/wikis/Tools.wiki
+        https://github.com/Mimino666/langdetect
 
     Args:
         text (Optional[str]): a given that that can be in any language
@@ -952,7 +963,7 @@ def pipeline_source_selector_spacy(lang_abb: Optional[str]) -> Optional[str]:
 
 def pipeline_size_str_conv_spacy(pipeline_size: Literal["small", "medium", "large", "transformer"]) -> Optional[str]:
     """
-    Converts the pipeline size w.r.t the Spacy specifications
+    Converts the pipeline size w.r.t the Spacy specifications.
 
     Args:
         pipeline_size (Literal["small", "medium", "large", "transformer"]): acceptable pipeline size
@@ -979,7 +990,9 @@ def pipeline_size_str_conv_spacy(pipeline_size: Literal["small", "medium", "larg
 def pipeline_selector_spacy(pref_lang: Optional[str], pref_pipeline_size: Literal["small", "medium", "large", "transformer"]) -> Optional[Language]:
     """
     Returns a Spacy language pipeline based on the input specifications.
-    https://spacy.io/usage/models#languages
+    
+    See more: 
+        https://spacy.io/usage/models#languages
 
     Args:
         pref_lang (Optional[str]): a preferable language
@@ -1017,7 +1030,7 @@ def pipeline_selector_spacy(pref_lang: Optional[str], pref_pipeline_size: Litera
 
 def remove_emoticon(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """
-        Removes all emoticons from the given text
+    Removes all emoticons from the given text.
 
     Args:
         text (Optional[str]): a text which contains multiple emoticons
@@ -1055,7 +1068,7 @@ def abbreviation_converter(text: Optional[str]) -> Optional[str]:
 
 def remove_punctuation(text: Optional[str]) -> Optional[str]:
     """
-    Remove the punctuations from the given text
+    Remove the punctuations from the given text.
 
     Args:
         text (Optional[str]): a text that may contain punctuation
@@ -1069,10 +1082,33 @@ def remove_punctuation(text: Optional[str]) -> Optional[str]:
 
     return text.translate(str.maketrans('', '', string.punctuation))
 
+
+def to_lemmatize(text: Optional[str]) -> Optional[str]:
+    """
+    Perform lemmatization for the given text.
+    
+    Note:
+        Lemmatization is the process of converting a word to its base form. The difference between stemming and lemmatization is, 
+        lemmatization considers the context and converts the word to its meaningful base form, whereas stemming just removes 
+        the last few characters, often leading to incorrect meanings and spelling errors.
+
+    Args:
+        text (Optional[str]): _description_
+
+    Returns:
+        Optional[str]: _description_
+    """    
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    pos_tagged_text = nltk.pos_tag(text.split())
+    return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text])
+
 # TODO: add specific character remove
 # TODO: give re and apply that
 # TODO: some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
-# TODO: stemming and lemmatization
+# TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
 # TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
 # TODO: remove xml precisely BeautifulSoup
@@ -1081,7 +1117,6 @@ def remove_punctuation(text: Optional[str]) -> Optional[str]:
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: User add RE and replace text
-# TODO: Stemming and Lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
 # full_stopwords_set = set.union(set(custom_extended_stopwords), set(stopwords.words("english")))
