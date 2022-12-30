@@ -20,6 +20,7 @@ from autocorrect import Speller
 from gensim import utils
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 
 # Private
 
@@ -780,7 +781,6 @@ def stop_words_spacy():
         tokens_filtered = [word for word in text_tokens if not word in my_stopwords]
         return (" ").join(tokens_filtered)
 
-    # from nltk.tokenize import word_tokenize
     # text_tokens = word_tokenize(text)
     # tokens_without_sw = [word for word in text_tokens if not word in all_stopwords]
 
@@ -1093,10 +1093,10 @@ def to_lemmatize(text: Optional[str]) -> Optional[str]:
         the last few characters, often leading to incorrect meanings and spelling errors.
 
     Args:
-        text (Optional[str]): _description_
+        text (Optional[str]): a regular text that may contain for example the "ing" form of verbs
 
     Returns:
-        Optional[str]: _description_
+        Optional[str]: a lemmatized text
     """    
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
@@ -1104,6 +1104,24 @@ def to_lemmatize(text: Optional[str]) -> Optional[str]:
 
     pos_tagged_text = nltk.pos_tag(text.split())
     return " ".join([lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text])
+
+def to_tokenize(text: Optional[str]) -> Optional[List[str]]:
+    """
+    Tokenize the given text.
+
+    Args:
+        text (Optional[str]): a text that may contain multiple words
+
+    Returns:
+        Optional[List[str]]: a list of tokens
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    # alternative: return re.split('\W+', text)
+    return nltk.word_tokenize(text)
+
 
 # TODO: add specific character remove
 # TODO: give re and apply that
