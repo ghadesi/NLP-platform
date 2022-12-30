@@ -1122,6 +1122,49 @@ def to_tokenize(text: Optional[str]) -> Optional[List[str]]:
     # alternative: return re.split('\W+', text)
     return nltk.word_tokenize(text)
 
+def regex_validation_checker(regex: Optional[str]) -> bool:
+    """
+    Checks if the given regular expression is valid.
+
+    Args:
+        regex (Optional[str]): a regular expression
+
+    Returns:
+        bool: True if the given regular expression is valid, False otherwise
+    """
+    # Input checking
+    if pd.isnull(regex) or not isinstance(regex, str):
+        return False
+
+    try:
+        re.compile(regex)
+        return True
+    except re.error:
+        return False
+
+def text_regex_cleaner(text: Optional[str], regex: Optional[str]) -> Optional[str]:
+    """
+    Removes the given regular expression from the given text.
+
+    Args:
+        text (Optional[str]): a text that may contain the given regular expression
+        regex (Optional[str]): a regular expression
+
+    Returns:
+        Optional[str]: a purified text that does not contain the given regular expression
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    if pd.isnull(regex) or not isinstance(regex, str):
+        return None
+    
+    if not regex_validation_checker(regex):
+        return None
+
+    return re.sub(regex, r'', text)
+
 
 # TODO: add specific character remove
 # TODO: give re and apply that
