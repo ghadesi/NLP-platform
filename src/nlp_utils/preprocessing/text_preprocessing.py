@@ -1142,7 +1142,7 @@ def regex_validation_checker(regex: Optional[str]) -> bool:
     except re.error:
         return False
 
-def text_regex_cleaner(text: Optional[str], regex: Optional[str]) -> Optional[str]:
+def remove_regex_match(text: Optional[str], regex: Optional[str]) -> Optional[str]:
     """
     Removes the given regular expression from the given text.
 
@@ -1164,6 +1164,34 @@ def text_regex_cleaner(text: Optional[str], regex: Optional[str]) -> Optional[st
         return None
 
     return re.sub(regex, r'', text)
+
+
+def substitue_regex_match(text: Optional[str], regex: Optional[str], sub_text: Optional[str]) -> Optional[str]:
+    """
+    Substituts with a string w.r.t the given regular expression.
+
+    Args:
+        text (Optional[str]): a text that may contain the given regular expression
+        regex (Optional[str]): a regular expression
+        sub_text: (Optional[str]): a string that will be substituted
+
+    Returns:
+        Optional[str]: a purified text that does substitut with the given string
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+    
+    if pd.isnull(sub_text) or not isinstance(sub_text, str):
+        return None
+    
+    if pd.isnull(regex) or not isinstance(regex, str):
+        return None
+    
+    if not regex_validation_checker(regex):
+        return None
+
+    return re.sub(regex, sub_text, text)
 
 
 # TODO: add specific character remove
