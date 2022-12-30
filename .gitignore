@@ -292,7 +292,7 @@ NLP*
 !src
 !src/*
 !src/nlp_utils/*
-!src/nlp_utils/ml/*
+!src/nlp_utils/embedding/*
 # !tests/*
 !assets/
 !assets/*
