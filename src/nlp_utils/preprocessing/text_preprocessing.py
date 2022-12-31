@@ -22,6 +22,7 @@ from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
+from collections import Counter
 
 # Private
 
@@ -1206,11 +1207,43 @@ def substitue_regex_match(text: Optional[str], regex: Optional[str], sub_text: O
     return re.sub(regex, sub_text, text)
 
 
+def remove_common_words(text_series: Optional[pd.Series], common_words_num: Optional[int]) -> Optional[pd.Series]:
+    """
+    Removes the common words from the given text set.
+
+    Args:
+        text_series (Optional[pd.Series]):  a text series that may contain the common words
+        common_words_num (Optional[int]): the number of the common words that will be removed
+
+    Returns:
+        Optional[pd.Series]: a purified text set that does not contain the common words
+    """    
+    # Input checking
+    if pd.isnull(text_series) or not isinstance(text_series, pd.Series):
+        return None
+
+    if pd.isnull(common_words_num) or not isinstance(common_words_num, int):
+        return None
+    
+    cnt = Counter()
+    for text in text_series.values:
+        for word in text.split():
+            cnt[word] += 1
+    
+    # Find the frequent words
+    freq = set([w for (w, wc) in cnt.most_common(common_words_num)])
+    
+    for text in text_series.values:
+        text = " ".join([word for word in str(text).split() if word not in freq])
+    
+    return text_series
+    
 # TODO: [Done] remove xml precisely BeautifulSoup
 # TODO: [Done] add specific character remove
 # TODO: [Done] give re and apply that
 # TODO: [Done] User add RE and replace text
 # TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
+# TODO: add to the stopwords set
 # TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
 # TODO: Chat Words Conversion
