@@ -1237,7 +1237,39 @@ def remove_common_words(text_series: Optional[pd.Series], common_words_num: Opti
         text = " ".join([word for word in str(text).split() if word not in freq])
     
     return text_series
+
+def remove_rare_words(text_series: Optional[pd.Series], rare_words_num: Optional[int]) -> Optional[pd.Series]:
+    """
+    Removes the rare words from the given text set.
+
+    Args:
+        text_series (Optional[pd.Series]):  a text series that may contain the rare words
+        rare_words_num (Optional[int]): the number of the rare words that will be removed
+
+    Returns:
+        Optional[pd.Series]: a purified text set that does not contain the rare words
+    """    
+    # Input checking
+    if pd.isnull(text_series) or not isinstance(text_series, pd.Series):
+        return None
+
+    if pd.isnull(rare_words_num) or not isinstance(rare_words_num, int):
+        return None
     
+    cnt = Counter()
+    for text in text_series.values:
+        for word in text.split():
+            cnt[word] += 1
+    
+    # Find the rare words
+    rare = set([w for (w, wc) in cnt.most_common()[:-rare_words_num-1:-1]])
+    
+    for text in text_series.values:
+        text = " ".join([word for word in str(text).split() if word not in rare])
+    
+    return text_series
+
+
 # TODO: [Done] remove xml precisely BeautifulSoup
 # TODO: [Done] add specific character remove
 # TODO: [Done] give re and apply that
