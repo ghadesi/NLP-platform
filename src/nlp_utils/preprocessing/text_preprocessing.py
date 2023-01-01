@@ -391,7 +391,7 @@ def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
     Eliminates the HTML tags from the given text and returns a tuple
     that contains the purified text and the number of matches.
-    
+
     Alternatively, you can use the following code:
         from bs4 import BeautifulSoup
         def remove_xml_v2(text):
@@ -838,7 +838,7 @@ def stopwords_nltk(pref_lang_lst: Optional[List[str]]) -> Optional[Set[str]]:
             stop_words = stop_words.union(set(nltk_sw.words(language)))
 
     full_stopwords_set = set.union(set(custom_extended_stopwords), set(stop_words))
-    
+
     return full_stopwords_set
 
 
@@ -856,7 +856,7 @@ def remove_stopwords(text: Optional[str], stopwords: Set) -> Optional[str]:
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
-    
+
     if pd.isnull(stopwords) or not isinstance(stopwords, Set):
         return None
 
@@ -1217,26 +1217,27 @@ def remove_common_words(text_series: Optional[pd.Series], common_words_num: Opti
 
     Returns:
         Optional[pd.Series]: a purified text set that does not contain the common words
-    """    
+    """
     # Input checking
     if pd.isnull(text_series) or not isinstance(text_series, pd.Series):
         return None
 
     if pd.isnull(common_words_num) or not isinstance(common_words_num, int):
         return None
-    
+
     cnt = Counter()
     for text in text_series.values:
         for word in text.split():
             cnt[word] += 1
-    
+
     # Find the frequent words
     freq = set([w for (w, wc) in cnt.most_common(common_words_num)])
-    
+
     for text in text_series.values:
         text = " ".join([word for word in str(text).split() if word not in freq])
-    
+
     return text_series
+
 
 def remove_rare_words(text_series: Optional[pd.Series], rare_words_num: Optional[int]) -> Optional[pd.Series]:
     """
@@ -1248,26 +1249,46 @@ def remove_rare_words(text_series: Optional[pd.Series], rare_words_num: Optional
 
     Returns:
         Optional[pd.Series]: a purified text set that does not contain the rare words
-    """    
+    """
     # Input checking
     if pd.isnull(text_series) or not isinstance(text_series, pd.Series):
         return None
 
     if pd.isnull(rare_words_num) or not isinstance(rare_words_num, int):
         return None
-    
+
     cnt = Counter()
     for text in text_series.values:
         for word in text.split():
             cnt[word] += 1
-    
+
     # Find the rare words
     rare = set([w for (w, wc) in cnt.most_common()[:-rare_words_num-1:-1]])
-    
+
     for text in text_series.values:
         text = " ".join([word for word in str(text).split() if word not in rare])
-    
+
     return text_series
+
+
+def convert_emoticon_to_words(text: Optional[str]) -> Optional[str]:
+    """
+    Converts emoticons to words.
+
+    Args:
+        text (Optional[str]): a text that may contain emoticons
+
+    Returns:
+        Optional[str]: a text that does not contain emoticons
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    for emot in Emoticon_Dict:
+        text = re.sub(u'('+emot+')', "_".join(Emoticon_Dict[emot].replace(",", "").split()), text)
+
+    return text
 
 
 # TODO: [Done] remove xml precisely BeautifulSoup
@@ -1275,6 +1296,7 @@ def remove_rare_words(text_series: Optional[pd.Series], rare_words_num: Optional
 # TODO: [Done] give re and apply that
 # TODO: [Done] User add RE and replace text
 # TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
+# TODO: [Done] some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
 # TODO: add to the stopwords set
 # TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
@@ -1284,7 +1306,6 @@ def remove_rare_words(text_series: Optional[pd.Series], rare_words_num: Optional
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
-# TODO: some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
 
 # from spellchecker import SpellChecker
 # https://github.com/barrust/pyspellchecker
