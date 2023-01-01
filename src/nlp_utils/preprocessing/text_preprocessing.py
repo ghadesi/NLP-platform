@@ -1310,15 +1310,41 @@ def convert_emoji_to_words(text: Optional[str]) -> Optional[str]:
 
     return text
 
+def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str]) -> Optional[set]:
+    """
+    Adds a word to the stop words set.
+
+    Args:
+        stop_words (Optional[set]): a stop words set
+        word (Union[list, str]): a word or a list of words that will be added to the stop words set
+
+    Returns:
+        Optional[set]: a stop words set that does not contain the given word
+    """
+    # Input checking
+    if pd.isnull(stop_words) or not isinstance(stop_words, set):
+        return None
+
+    if pd.isnull(word) or not isinstance(word, (list, str)):
+        return None
+
+    if isinstance(word, str):
+        stop_words.add(word)
+    elif isinstance(word, list):
+        for w in word:
+            stop_words.add(w)
+
+    return stop_words
+
 # TODO: [Done] remove xml precisely BeautifulSoup
 # TODO: [Done] add specific character remove
 # TODO: [Done] give re and apply that
 # TODO: [Done] User add RE and replace text
 # TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
 # TODO: [Done] some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
-# TODO: add to the stopwords set
-# TODO: Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
-# TODO: Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
+# TODO: [Done] add to the stopwords set
+# TODO: [Done] Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
+# TODO: [Done] Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
 # TODO: Chat Words Conversion
 # TODO: Spelling Correction
 # TODO: camelcase
