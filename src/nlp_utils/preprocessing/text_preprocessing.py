@@ -88,20 +88,10 @@ BLANK_PATTERN = re.compile(r"^\s*$")
 CONS_DUPLICATION_PATTERN = re.compile(r"\b(\w+)( \1\b)+", flags=re.IGNORECASE)
 
 # Typos, slang and other
-SAMPLE_TYPOS_SLANG = {
-    "w/e": "whatever",
-    "usagov": "usa government",
-    "recentlu": "recently",
-    "ph0tos": "photos",
-    "amirite": "am i right",
-    "exp0sed": "exposed",
-    "<3": "love",
-    "luv": "love",
-    "amageddon": "armageddon",
-    "trfc": "traffic",
-    "16yr": "16 year"
-}
-
+with open('./assets/slang_words.txt') as file:
+    SAMPLE_TYPOS_SLANG = dict(map(str.strip, line.partition('\t')[::2])
+    for line in file if line.strip())
+    
 # Acronyms
 SAMPLE_ACRONYMS = {
     "mh370": "malaysia airlines flight 370",
@@ -1310,6 +1300,7 @@ def convert_emoji_to_words(text: Optional[str]) -> Optional[str]:
 
     return text
 
+
 def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str]) -> Optional[set]:
     """
     Adds a word to the stop words set.
@@ -1336,6 +1327,8 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str])
 
     return stop_words
 
+
+
 # TODO: [Done] remove xml precisely BeautifulSoup
 # TODO: [Done] add specific character remove
 # TODO: [Done] give re and apply that
@@ -1345,7 +1338,7 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str])
 # TODO: [Done] add to the stopwords set
 # TODO: [Done] Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: [Done] Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
-# TODO: Chat Words Conversion
+# TODO: [Done] Chat Words Conversion
 # TODO: Spelling Correction
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
