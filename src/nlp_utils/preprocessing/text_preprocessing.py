@@ -1291,6 +1291,25 @@ def convert_emoticon_to_words(text: Optional[str]) -> Optional[str]:
     return text
 
 
+def convert_emoji_to_words(text: Optional[str]) -> Optional[str]:
+    """
+    Converts emojis to words.
+
+    Args:
+        text (Optional[str]): a text that may contain emojis
+
+    Returns:
+        Optional[str]: a text that does not contain emojis
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    for emot in UNICODE_EMOJI:
+        text = text.replace(emot, "_".join(UNICODE_EMOJI[emot].replace(",", "").replace(":", "").split()))
+
+    return text
+
 # TODO: [Done] remove xml precisely BeautifulSoup
 # TODO: [Done] add specific character remove
 # TODO: [Done] give re and apply that
