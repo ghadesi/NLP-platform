@@ -7,22 +7,21 @@ import pandas as pd
 import string
 import re
 import pickle
+from collections import Counter
 
 # 3rd Party
-from langdetect import detect, detect_langs
 from nltk.corpus import stopwords as nltk_sw
-import nltk
-from emot.emo_unicode import UNICODE_EMOJI, EMOTICONS_EMO
-import contractions
-import spacy
-from spacy.language import Language
-from autocorrect import Speller
-from gensim import utils
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+from gensim import utils
+from spacy.language import Language
+from emot.emo_unicode import UNICODE_EMOJI, EMOTICONS_EMO
+import contractions
 from cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
-from collections import Counter
+from spellchecker import SpellChecker
+from autocorrect import Speller
+from langdetect import detect, detect_langs
 
 # Private
 
@@ -59,7 +58,6 @@ with open('./assets/Emoticon_Dict.p', 'rb') as emoticon_file:
     Emoticon_Dict = pickle.load(emoticon_file)
 EMOTICON_PATTERN = re.compile(u'(' + u'|'.join(k for k in Emoticon_Dict) + u')')
 
-
 URL_PATTERN = re.compile(r"(ftp://|smtp://|SMTP://|http://|https://|http://www\.|https://www\.|www\.)?"
                          r"(?:[\x21-\x39\x3b-\x3f\x41-\x7e]+(?::[!-9;-?A-~]+)?@)?(?:xn--[0-9a-z]+|[0-9A-Za-z_-]+\.)*"
                          r"(?:xn--[0-9a-z]+|[0-9A-Za-z-]+)\.(?:xn--[0-9a-z]+|[0-9A-Za-z]{2,10})"
@@ -90,8 +88,8 @@ CONS_DUPLICATION_PATTERN = re.compile(r"\b(\w+)( \1\b)+", flags=re.IGNORECASE)
 # Typos, slang and other
 with open('./assets/slang_words.txt') as file:
     SAMPLE_TYPOS_SLANG = dict(map(str.strip, line.partition('\t')[::2])
-    for line in file if line.strip())
-    
+                              for line in file if line.strip())
+
 # Acronyms
 SAMPLE_ACRONYMS = {
     "mh370": "malaysia airlines flight 370",
@@ -376,6 +374,8 @@ CONTRACTIONS_PATTERN = re.compile('({})'.format('|'.join(CONTRACTIONS_DIC.keys()
 lemmatizer = WordNetLemmatizer()
 wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "J": wordnet.ADJ, "R": wordnet.ADV}  # Pos tag, used Noun, Verb, Adjective and Adverb
 
+# Spell Checker version 1: https://github.com/barrust/pyspellchecker
+spell = SpellChecker()
 
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
@@ -1327,6 +1327,28 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str])
 
     return stop_words
 
+def spell_correction_v1(text: Optional[str]) -> Optional[str]:
+    """
+    Corrects the spelling of the given text.
+
+    Args:
+        text (Optional[str]): a text that may contain misspelled words
+
+    Returns:
+        Optional[str]: a text that does not contain misspelled words
+    """
+    # Input checking
+    if pd.isnull(text) or not isinstance(text, str):
+        return None
+
+    corrected_text = []
+    misspelled_words = spell.unknown(text.split())
+    for word in text.split():
+        if word in misspelled_words:
+            corrected_text.append(spell.correction(word))
+        else:
+            corrected_text.append(word)
+    return " ".join(corrected_text)
 
 
 # TODO: [Done] remove xml precisely BeautifulSoup
@@ -1339,27 +1361,11 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str])
 # TODO: [Done] Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
 # TODO: [Done] Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
 # TODO: [Done] Chat Words Conversion
-# TODO: Spelling Correction
+# TODO: [Done] Spelling Correction
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
-
-# from spellchecker import SpellChecker
-# https://github.com/barrust/pyspellchecker
-
-# spell = SpellChecker()
-
-#  def correct_spellings(text):
-#     corrected_text = []
-#     misspelled_words = spell.unknown(text.split())
-#     for word in text.split():
-#         if word in misspelled_words:
-#             corrected_text.append(spell.correction(word))
-#         else:
-#             corrected_text.append(word)
-#     return " ".join(corrected_text)
-
 
 class Spell_checker_v1():
     """
