@@ -377,6 +377,7 @@ wordnet_map = {"N": wordnet.NOUN, "V": wordnet.VERB, "J": wordnet.ADJ, "R": word
 # Spell Checker version 1: https://github.com/barrust/pyspellchecker
 spell = SpellChecker()
 
+
 def remove_xml(html_text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     """ 
     Eliminates the HTML tags from the given text and returns a tuple
@@ -1327,6 +1328,7 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str])
 
     return stop_words
 
+
 def spell_correction_v1(text: Optional[str]) -> Optional[str]:
     """
     Corrects the spelling of the given text.
@@ -1366,7 +1368,7 @@ def spell_correction_v1(text: Optional[str]) -> Optional[str]:
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
-
+# TODO: I have to work on the below class as a the second version of the spell correction class. Aso: https://github.com/Deffro/text-preprocessing-techniques/blob/master/techniques.py
 class Spell_checker_v1():
     """
     This is spell correction class and supports 12 languages including: English, Polish, Turkish, Russian, Ukrainian, Czech, Portuguese, Greek,
