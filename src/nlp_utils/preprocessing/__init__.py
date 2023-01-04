@@ -1,9 +1,13 @@
 # Single function
-#     from nlp_utils.preprocessing.text_preprocessing import [name of the function] 
+#     from nlp_utils.preprocessing.text_preprocessing import [name of the function]
 # Multiple functions
 #     from nlp_utils.preprocessing.text_preprocessing import (f1, f2, f3)"
 
-from nlp_utils.preprocessing.text_preprocessing import remove_xml
+# By the below lines we fixed the issue of import testing for the cleaner_helper module
+import pathlib
+import sys
+sys.path.append(str(pathlib.Path(__file__).parent))
+
 from nlp_utils.preprocessing.text_preprocessing import to_strip
 from nlp_utils.preprocessing.text_preprocessing import to_lower
 from nlp_utils.preprocessing.text_preprocessing import remove_number
@@ -24,3 +28,4 @@ from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
 from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 from nlp_utils.preprocessing.text_preprocessing import convert_to_unicode
 from nlp_utils.preprocessing.text_preprocessing import expand_contractions
+from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict

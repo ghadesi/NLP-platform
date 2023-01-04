@@ -1,2 +1,2 @@
 from nlp_utils import preprocessing
-from nlp_utils import ml
+from nlp_utils import embedding

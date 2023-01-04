@@ -29,6 +29,8 @@ from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
 from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 from nlp_utils.preprocessing.text_preprocessing import convert_to_unicode
 from nlp_utils.preprocessing.text_preprocessing import expand_contractions
+from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
+
 # ───────────────────────────────── Tests ────────────────────────────────── #
 
 
@@ -362,7 +364,7 @@ class TestConversion:
         "input_text, ex_output",
         [
             # https://www.slicktext.com/blog/2019/02/text-abbreviations-guide/
-            ("the top FAQ are", "the top FAQ are"),
+            ("the top FAQ are", "the top Frequently Asked Questions are"),
             ("the top faq are", "the top frequently asked questions are"),
             (None, None)
         ],

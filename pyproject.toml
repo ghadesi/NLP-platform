@@ -12,7 +12,7 @@ line-length = 120
 # and being able to execute format checks and auto-formatting with two different commands.
 #--check = "yes"
 #diff = "y"
-color = true
+color = "true"
 target-version = ["py38"]
 
 [tool.pytest.ini_options]

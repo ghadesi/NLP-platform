@@ -10,11 +10,13 @@ import pickle
 from collections import Counter
 
 # 3rd Party
+import nltk
 from nltk.corpus import stopwords as nltk_sw
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from gensim import utils
+import spacy
 from spacy.language import Language
 from emot.emo_unicode import UNICODE_EMOJI, EMOTICONS_EMO
 import contractions
@@ -817,19 +819,18 @@ def stopwords_nltk(pref_lang_lst: Optional[List[str]]) -> Optional[Set[str]]:
     else:
         # There is no intersection between sets
         return None
-
-    stop_words = set()
-
     try:
+        stop_words = set()
         stop_words = nltk_sw.words("english")
     except LookupError:
         nltk.download('stopwords')
     finally:
+        stop_words = set()
         for language in total_lang:
             stop_words = stop_words.union(set(nltk_sw.words(language)))
 
     full_stopwords_set = set.union(set(custom_extended_stopwords), set(stop_words))
-
+    
     return full_stopwords_set
 
 
