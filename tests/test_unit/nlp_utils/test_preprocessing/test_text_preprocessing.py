@@ -1,7 +1,7 @@
 """Module providing utils testing for users to convert data."""
 # ───────────────────────────────── Imports ────────────────────────────────── #
 # Standard library
-from typing import List, Union, Any, Optional
+from typing import List, Union, Any, Optional, Set
 import pandas as pd
 import numpy as np
 import sys
@@ -32,6 +32,8 @@ from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 from nlp_utils.preprocessing.text_preprocessing import convert_to_unicode
 from nlp_utils.preprocessing.text_preprocessing import expand_contractions
 from nlp_utils.preprocessing.text_preprocessing import spell_correction_v1
+from nlp_utils.preprocessing.text_preprocessing import add_word_to_stopwords_set
+from nlp_utils.preprocessing.text_preprocessing import stopwords_nltk
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
@@ -42,7 +44,7 @@ from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, cu
 
 #  data = _synthetic_classification(n_rows=100, n_unique_y=n_unique_y)
 #  inputs = {"y_test": data.y, "y_scores": data.y_prob, "unique_y": data.unique_y, "unique_labels": data.unique_labels}
- 
+
 # @staticmethod
 # def output_check(output: Any, **kwargs):
 #     # No checks being done on parent class, must be implemented in child class
@@ -57,7 +59,7 @@ from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, cu
 #     if positive_class is not None:
 #         assert len(output["graphJson"]["data"]) == 1
 #         assert output["graphJson"]["data"][0]["name"] == positive_class
-            
+
 # self.output_check(output, output_expected=output_expected)
 
 # import sys
@@ -82,12 +84,12 @@ from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, cu
 #     assert n + 1 == expected
 
 
-# For the test Repetition 
+# For the test Repetition
 # https://pypi.org/project/pytest-repeat/
 # $ pip install pytest-aggreport
-# pip install pytest-repeat 
+# pip install pytest-repeat
 # pytest --count=10 -x test_file.py
-    # x: to force the test runner to stop at the first failure
+# x: to force the test runner to stop at the first failure
 # Usage: @pytest.mark.repeat(3)
 
 # HTML report: https://pytest-html.readthedocs.io/en/latest/user_guide.html
@@ -217,7 +219,6 @@ class TestCharacter:
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output_text, "Expectation mismatch."
-
 
 
 class TestDuplication:
@@ -427,7 +428,7 @@ class TestChecker:
     def test_convert_to_unicode(self, input_text: Optional[str], ex_output: Optional[bool]):
         # TODO: Fix this test
         result = convert_to_unicode(input_text)
-        
+
         # assert isinstance(result, (bool, type(None))), "The output text is not string."
         # assert result == ex_output, "Expectation mismatch."
 
@@ -448,6 +449,64 @@ class TestConversion:
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
+
+
+class TestAdder:
+    @pytest.mark.parametrize(
+        "input_word, ex_output_bool",
+        [
+            (None, False),
+            ("", False),
+            ([], False),
+            ({}, False),
+            ("book", True),
+            (["book"], True),
+            (["book", "star"], True),
+            ({"book", "star"}, True),
+        ],
+    )
+    def test_add_word_to_stopwords_set(self, input_word: Union[List[Any], Set[Any], str, None], ex_output_bool: Optional[bool]):
+
+        english_stop_words = stopwords_nltk(["English"])
+        result_stop_words = add_word_to_stopwords_set(english_stop_words, input_word)
+
+        if isinstance(result_stop_words, type(None)):
+            assert False == ex_output_bool, "Expectation mismatch."
+        
+        elif isinstance(input_word, type(None)):
+            len_original_stop_words_set = len(english_stop_words)
+            len_eddited_stop_words_set = len(result_stop_words)
+            
+            assert (len_original_stop_words_set == len_eddited_stop_words_set) and False == ex_output_bool, "Expectation mismatch."
+        
+        else:
+            len_original_stop_words_set = len(english_stop_words)
+            len_eddited_stop_words_set = len(result_stop_words)
+
+            # Subset checker
+            added_flag = False
+
+            if isinstance(input_word, str):
+                print("inja0")
+                
+                input_word_set = set([input_word])
+            else:
+                print("inja1")
+
+                input_word_set = set(input_word)
+
+            if input_word_set.issubset(result_stop_words):
+                print("inja2")
+                
+                added_flag = True
+            print(result_stop_words)
+            print("\n\n")
+            print(english_stop_words)
+            if len_original_stop_words_set == len_eddited_stop_words_set:
+                print("inja3")
+                added_flag = False
+
+            assert added_flag == ex_output_bool, "Expectation mismatch."
 
 
 class TestExpantion:
@@ -473,4 +532,3 @@ class TestExpantion:
     def test_speed(self):
         px = np.sort(np.random.default_rng().normal(0, 1, 1000000))
         py = np.sort(np.random.default_rng().normal(0, 1, 1000000))
-
