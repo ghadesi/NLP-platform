@@ -5,17 +5,55 @@
 # in the setup.cfg file. This file currently only exists for the management of Black configuration parameters.
 #
 
+[project]
+name = "TexML"
+description = "Implementing the NLP part of the EvoML platform."
+version = "0.0.1"
+authors = [
+  { name = "Amin Ghadesi", email = "amin@turintech.ai" },
+  { name = "Amir Babaeian", email = "amir@turintech.ai" }
+]
+dependencies = [
+  "autocorrect==2.6.1",
+  "contractions==0.1.73",
+  "emot==3.1",
+  "gensim==4.2.0",
+  "ipython==8.8.0",
+  "langdetect==1.0.9",
+  "matplotlib==3.6.0",
+  "nltk==3.7",
+  "pandas==1.5.1",
+  "scikit_learn==1.2.0",
+  "seaborn==0.12.2",
+  "spacy_langdetect==0.1.2",
+  "transformers==4.25.1",
+]
+readme = "README.md"
+keywords = ["TexML", "NLP", "packaging", "dependency", "infer", "pyproject.toml"]
+
+[project.urls]
+homepage = "https://github.com/ghadesi/NLP-platform"
+documentation = ""
+repository = "https://github.com/ghadesi/NLP-platform"
+
 [tool.black]
 verbose = 1
 line-length = 120
 # --check and diff options are commented in order to provide them over the command line, to make invocation more flexible
 # and being able to execute format checks and auto-formatting with two different commands.
-#--check = "yes"
-#diff = "y"
-color = "true"
+--check = "yes"
+diff = "y"
+# VSCode does not support colors in the output channel, unfortunately.
+color = true
 target-version = ["py38"]
 
 [tool.pytest.ini_options]
 pythonpath = [
   ".", "src",
 ]
+addopts = "--instafail --cov --cov-report html --cov-report term-missing --cov-fail-under 95 --benchmark-histogram -rxXs --count 1 --html=report.html --self-contained-html"
+markers = []
+render_collapsed = true
+
+[tool.coverage.run]
+source = ["src"]
