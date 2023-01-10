@@ -830,7 +830,7 @@ def stopwords_nltk(pref_lang_lst: Optional[List[str]]) -> Optional[Set[str]]:
             stop_words = stop_words.union(set(nltk_sw.words(language)))
 
     full_stopwords_set = set.union(set(custom_extended_stopwords), set(stop_words))
-    
+
     return full_stopwords_set
 
 
@@ -1303,7 +1303,7 @@ def convert_emoji_to_words(text: Optional[str]) -> Optional[str]:
     return text
 
 
-def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str]) -> Optional[set]:
+def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, set, str]) -> Optional[set]:
     """
     Adds a word to the stop words set.
 
@@ -1318,12 +1318,31 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, str])
     if pd.isnull(stop_words) or not isinstance(stop_words, set):
         return None
 
-    if pd.isnull(word) or not isinstance(word, (list, str)):
+    # Check the empty set
+    if len(stop_words) == 0:
         return None
 
+    if isinstance(pd.isnull(word), bool):
+        if pd.isnull(word):
+            return stop_words
+    else:
+        if pd.isnull(word).all():
+            return stop_words
+
+    if not isinstance(word, (list, set, str)):
+        return stop_words
+
+    # Check the empty set, set
+    if len(word) == 0:
+        return stop_words
+    
+    # The add function, adds a single element to the existing set or 
+    # original set so we create a new instance of that
+    stop_words = set(stop_words)
+    
     if isinstance(word, str):
         stop_words.add(word)
-    elif isinstance(word, list):
+    elif isinstance(word, (list, set)):
         for w in word:
             stop_words.add(w)
 
