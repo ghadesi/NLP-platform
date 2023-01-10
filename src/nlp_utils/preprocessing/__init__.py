@@ -28,4 +28,5 @@ from nlp_utils.preprocessing.text_preprocessing import remove_emoticon
 from nlp_utils.preprocessing.text_preprocessing import abbreviation_converter
 from nlp_utils.preprocessing.text_preprocessing import convert_to_unicode
 from nlp_utils.preprocessing.text_preprocessing import expand_contractions
+from nlp_utils.preprocessing.text_preprocessing import spell_correction_v1
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
