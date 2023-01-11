@@ -33,5 +33,6 @@ from nlp_utils.preprocessing.text_preprocessing import add_word_to_stopwords_set
 from nlp_utils.preprocessing.text_preprocessing import stopwords_nltk
 from nlp_utils.preprocessing.text_preprocessing import convert_emoji_to_words
 from nlp_utils.preprocessing.text_preprocessing import convert_emoticon_to_words
-from nlp_utils.preprocessing.text_preprocessing import remove_regex_match 
+from nlp_utils.preprocessing.text_preprocessing import remove_regex_match
+from nlp_utils.preprocessing.text_preprocessing import substitue_regex_match
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
