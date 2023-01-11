@@ -1,7 +1,7 @@
 """Module providing utils testing for users to convert data."""
 # ───────────────────────────────── Imports ────────────────────────────────── #
 # Standard library
-from typing import List, Union, Any, Optional, Set
+from typing import List, Union, Any, Optional, Set, Iterable
 import pandas as pd
 import numpy as np
 import sys
@@ -35,6 +35,7 @@ from nlp_utils.preprocessing.text_preprocessing import spell_correction_v1
 from nlp_utils.preprocessing.text_preprocessing import add_word_to_stopwords_set
 from nlp_utils.preprocessing.text_preprocessing import stopwords_nltk
 from nlp_utils.preprocessing.text_preprocessing import convert_emoji_to_words
+from nlp_utils.preprocessing.text_preprocessing import convert_emoticon_to_words
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
@@ -318,6 +319,24 @@ class TestEmojiEmoticons:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            (None, None),
+            ("", ""),
+            ("Hello", "Hello"),
+            ("Hello :)", "Hello Happy_face_or_smiley"),  # Ask to Amir: Should we remove the underscore?
+            ("Hello :-)", "Hello Happy_face_smiley"),
+            ("Hello :) :(", "Hello Happy_face_or_smiley Frown_sad_andry_or_pouting"),
+        ],
+    )
+    def test_convert_emoticon_to_words(self, input_text: Optional[str], ex_output: Optional[str]):
+
+        result_text = convert_emoticon_to_words(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expectation mismatch."
+
 
 class TestURL:
     @pytest.mark.parametrize(
@@ -484,7 +503,7 @@ class TestAdder:
             ({"book", "star"}, True),
         ],
     )
-    def test_add_word_to_stopwords_set(self, input_word: Union[List[Any], Set[Any], str, None], ex_output_bool: Optional[bool]):
+    def test_add_word_to_stopwords_set(self, input_word: Union[List, Set, str, None], ex_output_bool: Optional[bool]):
 
         english_stop_words = stopwords_nltk(["English"])
         result_stop_words = add_word_to_stopwords_set(english_stop_words, input_word)
@@ -506,23 +525,15 @@ class TestAdder:
             added_flag = False
 
             if isinstance(input_word, str):
-                print("inja0")
-
                 input_word_set = set([input_word])
-            else:
-                print("inja1")
 
+            else:
                 input_word_set = set(input_word)
 
             if input_word_set.issubset(result_stop_words):
-                print("inja2")
-
                 added_flag = True
-            print(result_stop_words)
-            print("\n\n")
-            print(english_stop_words)
+
             if len_original_stop_words_set == len_eddited_stop_words_set:
-                print("inja3")
                 added_flag = False
 
             assert added_flag == ex_output_bool, "Expectation mismatch."
