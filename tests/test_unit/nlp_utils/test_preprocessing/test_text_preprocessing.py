@@ -36,6 +36,7 @@ from nlp_utils.preprocessing.text_preprocessing import add_word_to_stopwords_set
 from nlp_utils.preprocessing.text_preprocessing import stopwords_nltk
 from nlp_utils.preprocessing.text_preprocessing import convert_emoji_to_words
 from nlp_utils.preprocessing.text_preprocessing import convert_emoticon_to_words
+from nlp_utils.preprocessing.text_preprocessing import remove_regex_match
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
@@ -469,6 +470,23 @@ class TestChecker:
 
         # assert isinstance(result, (bool, type(None))), "The output text is not string."
         # assert result == ex_output, "Expectation mismatch."
+
+    @pytest.mark.parametrize(
+        "input_text, input_regex, ex_output",
+        [
+            (None, None, None),
+            ("", None, None),
+            (None, "", None),
+            ("", "", ""),
+            ("Hello, my id is 123 and 000.", r"\d+", "Hello, my id is  and .")
+        ],
+    )
+    def test_remove_regex_match(self, input_text: Optional[str], input_regex: Optional[str], ex_output: Optional[bool]):
+
+        result = remove_regex_match(input_text, input_regex)
+
+        assert isinstance(result, (str, type(None))), "The output text is not string."
+        assert result == ex_output, "Expectation mismatch."
 
 
 class TestConversion:
