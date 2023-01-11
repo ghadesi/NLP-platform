@@ -41,8 +41,8 @@ verbose = 1
 line-length = 120
 # --check and diff options are commented in order to provide them over the command line, to make invocation more flexible
 # and being able to execute format checks and auto-formatting with two different commands.
---check = "yes"
-diff = "y"
+#--check = "yes"
+#diff = "y"
 # VSCode does not support colors in the output channel, unfortunately.
 color = true
 target-version = ["py38"]
@@ -51,7 +51,7 @@ target-version = ["py38"]
 pythonpath = [
   ".", "src",
 ]
-#addopts = "--instafail --cov --cov-report html --cov-report term-missing --cov-fail-under 95 --benchmark-histogram -rxXs --count 1 --html=report.html --self-contained-html --capture=sys"
+addopts = "-n4 --instafail --cov --cov-report html --cov-report term-missing --cov-fail-under 95 --benchmark-histogram -rxXs --count 1 --html=report.html --self-contained-html --capture=sys"
 markers = []
 render_collapsed = true
 

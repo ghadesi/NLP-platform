@@ -34,6 +34,7 @@ from nlp_utils.preprocessing.text_preprocessing import expand_contractions
 from nlp_utils.preprocessing.text_preprocessing import spell_correction_v1
 from nlp_utils.preprocessing.text_preprocessing import add_word_to_stopwords_set
 from nlp_utils.preprocessing.text_preprocessing import stopwords_nltk
+from nlp_utils.preprocessing.text_preprocessing import convert_emoji_to_words
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
@@ -267,7 +268,7 @@ class TestDuplication:
         assert result_text == ex_output, "Expectation mismatch."
 
 
-class TestEmpjiEmoticons:
+class TestEmojiEmoticons:
     @pytest.mark.parametrize(
         "input_text, ex_output, ex_num_matches",
         [
@@ -298,6 +299,24 @@ class TestEmpjiEmoticons:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output and result_matches == ex_num_matches, "Expectation mismatch."
+
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            (None, None),
+            ("", ""),
+            ("Hello", "Hello"),
+            ("Hello 😂", "Hello face_with_tears_of_joy"),  # Ask to Amir: Should we remove the underscore?
+            ("Hello 🍕", "Hello pizza"),
+            ("Hello ✅ ✍🏻 🧚🏼‍♀️", "Hello check_mark_button writing_handlight_skin_tone fairymedium-light_skin_tone‍female_sign️"),
+        ],
+    )
+    def test_convert_emoji_to_words(self, input_text: Optional[str], ex_output: Optional[str]):
+
+        result_text = convert_emoji_to_words(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expectation mismatch."
 
 
 class TestURL:
@@ -472,13 +491,13 @@ class TestAdder:
 
         if isinstance(result_stop_words, type(None)):
             assert False == ex_output_bool, "Expectation mismatch."
-        
+
         elif isinstance(input_word, type(None)):
             len_original_stop_words_set = len(english_stop_words)
             len_eddited_stop_words_set = len(result_stop_words)
-            
+
             assert (len_original_stop_words_set == len_eddited_stop_words_set) and False == ex_output_bool, "Expectation mismatch."
-        
+
         else:
             len_original_stop_words_set = len(english_stop_words)
             len_eddited_stop_words_set = len(result_stop_words)
@@ -488,7 +507,7 @@ class TestAdder:
 
             if isinstance(input_word, str):
                 print("inja0")
-                
+
                 input_word_set = set([input_word])
             else:
                 print("inja1")
@@ -497,7 +516,7 @@ class TestAdder:
 
             if input_word_set.issubset(result_stop_words):
                 print("inja2")
-                
+
                 added_flag = True
             print(result_stop_words)
             print("\n\n")
