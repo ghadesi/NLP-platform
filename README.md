@@ -26,5 +26,8 @@ For the performance test there are below plugins.
  - [ ] [pytest-performance](https://pypi.org/project/pytest-performance/)
  - [x] [pytest-benchmark](https://pypi.org/project/pytest-benchmark/) 
 
-Furthermore, you can see all the **pytest** result, by opening the `result.html` file in the browser.
+Furthermore, you can see all the **pytest** result, by opening the `result.html` file in the browser. And, we used the the below options for our pytest running configuration:
 
+```bash
+addopts = "-n2 --instafail --cov --cov-report html --cov-report term-missing --cov-fail-under 95 --benchmark-histogram -rxXs --count 1 --html=report.html --self-contained-html --capture=sys"
+```
