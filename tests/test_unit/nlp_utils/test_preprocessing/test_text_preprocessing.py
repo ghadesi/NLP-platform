@@ -38,6 +38,7 @@ from nlp_utils.preprocessing.text_preprocessing import convert_emoji_to_words
 from nlp_utils.preprocessing.text_preprocessing import convert_emoticon_to_words
 from nlp_utils.preprocessing.text_preprocessing import remove_regex_match
 from nlp_utils.preprocessing.text_preprocessing import substitue_regex_match
+from nlp_utils.preprocessing.text_preprocessing import to_lemmatize
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
@@ -507,6 +508,7 @@ class TestChecker:
         assert isinstance(result, (str, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
 
+
 class TestConversion:
     @pytest.mark.parametrize(
         "input_text, ex_output",
@@ -593,8 +595,25 @@ class TestExpantion:
 
     # @pytest.mark.skip
     # @pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
-    # @pytest.mark.repeat(5)
+    # @pytest.mark.repeat(1000)
     @pytest.fixture
     def test_speed(self):
         px = np.sort(np.random.default_rng().normal(0, 1, 1000000))
         py = np.sort(np.random.default_rng().normal(0, 1, 1000000))
+
+
+class TestLemmatization:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            (None, None),
+            ("", ""),
+            ("The striped bats are hanging on their feet for best", "The striped bat be hang on their foot for best"),
+        ],
+    )
+    def test_to_lemmatize(self, input_text: Optional[str], ex_output: Optional[str]):
+
+        result_text = to_lemmatize(input_text)
+
+        assert isinstance(result_text, (str, type(None))), "The output text is not string."
+        assert result_text == ex_output, "Expectation mismatch."

@@ -1094,12 +1094,18 @@ def to_lemmatize(text: Optional[str]) -> Optional[str]:
         lemmatization considers the context and converts the word to its meaningful base form, whereas stemming just removes 
         the last few characters, often leading to incorrect meanings and spelling errors.
 
+    More info:
+        https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
+
     Args:
         text (Optional[str]): a regular text that may contain for example the "ing" form of verbs
 
     Returns:
         Optional[str]: a lemmatized text
     """
+    #TODO: Ask to Amir: In transformer models do we need to lemmaize the text? 
+    # https://stackoverflow.com/questions/63979544/using-trained-bert-model-and-data-preprocessing
+
     # Input checking
     if pd.isnull(text) or not isinstance(text, str):
         return None
