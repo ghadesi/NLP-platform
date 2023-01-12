@@ -11,6 +11,7 @@ import re
 import pytest
 
 # Private
+import test_unit.nlp_utils.test_preprocessing._synthetic_dbs as dbs
 from nlp_utils.preprocessing.text_preprocessing import remove_xml
 from nlp_utils.preprocessing.text_preprocessing import to_strip
 from nlp_utils.preprocessing.text_preprocessing import to_lower
@@ -44,8 +45,6 @@ from nlp_utils.preprocessing.text_preprocessing import to_tokenize
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
-# from tests.evoml_utils.ml_model.explain.explain_test_utils import (_synthetic_classification)
-
 # if self.is_binary:
 #     pytest.skip("Test only applies for functions with multiclass enabled")
 
