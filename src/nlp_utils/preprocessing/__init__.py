@@ -36,4 +36,5 @@ from nlp_utils.preprocessing.text_preprocessing import convert_emoticon_to_words
 from nlp_utils.preprocessing.text_preprocessing import remove_regex_match
 from nlp_utils.preprocessing.text_preprocessing import substitue_regex_match
 from nlp_utils.preprocessing.text_preprocessing import to_lemmatize
+from nlp_utils.preprocessing.text_preprocessing import to_tokenize
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict

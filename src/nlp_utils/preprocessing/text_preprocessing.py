@@ -1103,7 +1103,7 @@ def to_lemmatize(text: Optional[str]) -> Optional[str]:
     Returns:
         Optional[str]: a lemmatized text
     """
-    #TODO: Ask to Amir: In transformer models do we need to lemmaize the text? 
+    # TODO: Ask to Amir: In transformer models do we need to lemmaize the text?
     # https://stackoverflow.com/questions/63979544/using-trained-bert-model-and-data-preprocessing
 
     # Input checking
@@ -1341,11 +1341,11 @@ def add_word_to_stopwords_set(stop_words: Optional[set], word: Union[list, set, 
     # Check the empty set, set
     if len(word) == 0:
         return stop_words
-    
-    # The add function, adds a single element to the existing set or 
+
+    # The add function, adds a single element to the existing set or
     # original set so we create a new instance of that
     stop_words = set(stop_words)
-    
+
     if isinstance(word, str):
         stop_words.add(word)
     elif isinstance(word, (list, set)):

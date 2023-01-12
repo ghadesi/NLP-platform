@@ -5,6 +5,7 @@ from typing import List, Union, Any, Optional, Set, Iterable
 import pandas as pd
 import numpy as np
 import sys
+import re
 
 # 3rd Party
 import pytest
@@ -39,6 +40,7 @@ from nlp_utils.preprocessing.text_preprocessing import convert_emoticon_to_words
 from nlp_utils.preprocessing.text_preprocessing import remove_regex_match
 from nlp_utils.preprocessing.text_preprocessing import substitue_regex_match
 from nlp_utils.preprocessing.text_preprocessing import to_lemmatize
+from nlp_utils.preprocessing.text_preprocessing import to_tokenize
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
@@ -66,10 +68,6 @@ from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, cu
 #         assert output["graphJson"]["data"][0]["name"] == positive_class
 
 # self.output_check(output, output_expected=output_expected)
-
-# import sys
-# import pytest
-
 
 # @pytest.mark.parametrize(
 #     ("n", "expected"),
@@ -617,3 +615,20 @@ class TestLemmatization:
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
+
+
+class TestTokenization:
+    @pytest.mark.parametrize(
+        "input_text, ex_output",
+        [
+            (None, None),
+            ("", []),
+            ("Hello my name is Amin", ["Hello", "my", "name", "is", "Amin"]),
+        ],
+    )
+    def test_to_tokenize(self, input_text: Optional[str], ex_output: Optional[List]):
+
+        result = to_tokenize(input_text)
+
+        assert isinstance(result, (List, type(None))), "The output text is not string."
+        assert result == ex_output, "Expectation mismatch."
