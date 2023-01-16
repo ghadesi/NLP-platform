@@ -45,58 +45,7 @@ from nlp_utils.preprocessing.text_preprocessing import to_tokenize
 from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, custom_shortforms, custom_direct_replacement_dict
 
 # ───────────────────────────────── Tests ────────────────────────────────── #
-# if self.is_binary:
-#     pytest.skip("Test only applies for functions with multiclass enabled")
 
-#  data = _synthetic_classification(n_rows=100, n_unique_y=n_unique_y)
-#  inputs = {"y_test": data.y, "y_scores": data.y_prob, "unique_y": data.unique_y, "unique_labels": data.unique_labels}
-
-# @staticmethod
-# def output_check(output: Any, **kwargs):
-#     # No checks being done on parent class, must be implemented in child class
-#     warnings.warn("No output checks have been implemented")
-# @staticmethod
-# def output_check(output: Any, output_expected: bool = True, positive_class: Optional[Any] = None, **kwargs):
-#     if not output_expected:
-#         assert output is None
-#         return
-#     assert isinstance(output, dict)
-#     assert output["type"] == "rocCurve", "output['type'] value is not 'rocCurve'."
-#     if positive_class is not None:
-#         assert len(output["graphJson"]["data"]) == 1
-#         assert output["graphJson"]["data"][0]["name"] == positive_class
-
-# self.output_check(output, output_expected=output_expected)
-
-# @pytest.mark.parametrize(
-#     ("n", "expected"),
-#     [
-#         (1, 2),
-#         pytest.param(1, 0, marks=pytest.mark.xfail),
-#         pytest.param(1, 3, marks=pytest.mark.xfail(reason="some bug")),
-#         (2, 3),
-#         (3, 4),
-#         (4, 5),
-#         pytest.param(
-#             10, 11, marks=pytest.mark.skipif(sys.version_info >= (3, 0), reason="py2k")
-#         ),
-#     ],
-# )
-# def test_increment(n, expected):
-#     assert n + 1 == expected
-
-
-# For the test Repetition
-# https://pypi.org/project/pytest-repeat/
-# $ pip install pytest-aggreport
-# pip install pytest-repeat
-# pytest --count=10 -x test_file.py
-# x: to force the test runner to stop at the first failure
-# Usage: @pytest.mark.repeat(3)
-
-# HTML report: https://pytest-html.readthedocs.io/en/latest/user_guide.html
-#  pip install pytest-html
-# pytest --html=report.html --self-contained-html
 
 class TestHTML:
     @pytest.mark.parametrize(
