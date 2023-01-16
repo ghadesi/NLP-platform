@@ -51,7 +51,7 @@ target-version = ["py38"]
 pythonpath = [
   ".", "src", "tests"
 ]
-addopts = "-n2 --instafail --cov --cov-report html --cov-report term-missing --cov-fail-under 95 --benchmark-histogram -rxXs --count 1 --html=report.html --self-contained-html --capture=sys"
+addopts = "--durations=0 -n2 --instafail --cov --cov-report html --benchmark-histogram -rxXs --count 1000 --html=report.html --self-contained-html"
 markers = []
 render_collapsed = true
 

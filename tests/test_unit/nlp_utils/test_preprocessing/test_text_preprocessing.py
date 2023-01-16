@@ -65,6 +65,21 @@ class TestHTML:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1),
+            (1000),
+            (7000),
+        ],
+    )
+    def test_pref_remove_xml_HTML_tags(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_xml(text)
+
 
 class TestToStrip:
     @pytest.mark.parametrize(
