@@ -21,8 +21,9 @@ class Synthetic_tweet_emotion_en_db:
     def __init__(self, n_samples: int = 100, seed: int = 100):
         self.n_samples = n_samples
         self.seed = seed
+        
         tweet_df = pd.read_csv("./Datasets/Twitter_DS.txt", sep="\t", header=None, names=["Index", "Text", "Feeling"])
-        self.selected_tweet_df = tweet_df.sample(n=n_samples, random_state=seed).Text.values.tolist()
+        self.selected_tweet_df = tweet_df.sample(n=n_samples, random_state=seed)
 
     def __repr__(self) -> str:
         return f"Synthetic_tweet_emotion_en_db(n_samples={self.n_samples}, seed={self.seed})"
