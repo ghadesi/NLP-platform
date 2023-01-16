@@ -22,6 +22,11 @@ class Synthetic_tweet_emotion_en:
         self.seed = seed
 
         tweet_df = pd.read_csv("./Datasets/Twitter_DS_emotion.txt", sep="\t", header=None, names=["Index", "Text", "Feeling"], index_col=None)
+        
+        if n_samples > len(tweet_df):
+            warnings.warn(f"n_samples is greater than the number of samples in the database. n_samples will be set to {len(tweet_df)}")
+            n_samples = len(tweet_df)
+        
         self.selected_tweet_df = tweet_df.sample(n=n_samples, random_state=seed)
 
     def __repr__(self) -> str:
@@ -54,6 +59,11 @@ class Synthetic_tweet_multi_language:
         tweet_df = tweet_df.sample(frac=1, random_state=seed).reset_index(drop=True)
 
         tweet_df_pref_lan = tweet_df[tweet_df.tweet_language.isin(self.language)].reset_index()
+        
+        if n_samples > len(tweet_df_pref_lan):
+            warnings.warn(f"n_samples is greater than the number of samples in the database. n_samples will be set to {len(tweet_df_pref_lan)}")
+            n_samples = len(tweet_df_pref_lan)
+        
         self.selected_tweet_df = tweet_df.sample(n=n_samples, random_state=seed)
 
         self.n_samples = n_samples
