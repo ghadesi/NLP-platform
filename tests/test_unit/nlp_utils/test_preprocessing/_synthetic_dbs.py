@@ -27,7 +27,7 @@ class Synthetic_tweet_emotion_en:
     def __repr__(self) -> str:
         return f"Synthetic_tweet_emotion_en_db(n_samples={self.n_samples}, seed={self.seed})"
 
-    def get_test_list(self) -> List:
+    def get_text_list(self) -> List:
         return self.selected_tweet_df.Text.values.tolist()
 
     def get_df(self) -> pd.DataFrame:
