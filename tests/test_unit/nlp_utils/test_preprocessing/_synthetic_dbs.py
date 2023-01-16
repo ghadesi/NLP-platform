@@ -1,24 +1,22 @@
 """Module providing utility dbs for developers to test the performance of the preprocessing moduls. """
 # ───────────────────────────────── Imports ────────────────────────────────── #
 # Standard library
-from typing import List, Union, Any, Optional, Set, Iterable
+from typing import List, Union
 import pandas as pd
-import numpy as np
 import warnings
-import sys
-import re
 
 # 3rd Party
-import pytest
 
 # Private
-import pandas as pd
-from typing import List
 
 # ───────────────────────────────── DBs Class ────────────────────────────────── #
 
 
 class Synthetic_tweet_emotion_en:
+    """
+        Synthetic tweet emotion database for testing the preprocessing module.
+    """
+
     def __init__(self, n_samples: int = 100, seed: int = 100):
         self.n_samples = n_samples
         self.seed = seed
@@ -43,6 +41,10 @@ class Synthetic_tweet_emotion_en:
 
 
 class Synthetic_tweet_multi_language:
+    """
+        Synthetic tweet multi language database for testing the preprocessing module.
+    """
+
     def __init__(self, n_samples: int = 100, seed: int = 100, language: Union[None, str, List] = "en"):
 
         tweet_df = pd.read_csv("./Datasets/Twitter_DS_multi_language.csv", header=0, lineterminator='\n')
@@ -57,7 +59,7 @@ class Synthetic_tweet_multi_language:
         self.n_samples = n_samples
         self.seed = seed
 
-    def __language_support(self, tweet_df: pd.dataFrame, language: Union[None, str, List]) -> List:
+    def __language_support(self, tweet_df: pd.DataFrame, language: Union[None, str, List]) -> List:
         """
         [Private method] Check if the database supports the preferred language.
 
