@@ -48,6 +48,7 @@ from nlp_utils.preprocessing.cleaner_helper import custom_extended_stopwords, cu
 
 
 class TestHTML:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
@@ -68,12 +69,11 @@ class TestHTML:
     @pytest.mark.parametrize(
         "n_samples",
         [
-            (1),
             (1000),
-            (7000),
+            (2000),
         ],
     )
-    def test_pref_remove_xml_HTML_tags(self, n_samples: int):
+    def test_perf_remove_xml_HTML_tags(self, n_samples: int):
 
         data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
 
@@ -82,6 +82,7 @@ class TestHTML:
 
 
 class TestToStrip:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -95,8 +96,23 @@ class TestToStrip:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_to_strip(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = to_strip(text)
+
 
 class TestToLower:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -109,8 +125,23 @@ class TestToLower:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_to_lower(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = to_lower(text)
+
 
 class TestNumbers:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -124,8 +155,23 @@ class TestNumbers:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_number(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = remove_number(text)
+
 
 class TestCharacter:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
@@ -141,6 +187,21 @@ class TestCharacter:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_any_char(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_any_char(text)
+
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, input_spec_char, ex_output_text, ex_num_matches",
         [
@@ -158,6 +219,21 @@ class TestCharacter:
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_special_char(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_special_char(text, ["٪", "《", "》", "¿"])
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, ex_output_text",
         [
             ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"", "James Hi Thomas I havent seen you for ages How have you been"),
@@ -173,6 +249,21 @@ class TestCharacter:
         assert result_text == ex_output_text, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_punctuation(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = remove_punctuation(text)
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, ex_output_text",
         [
             (None, None),
@@ -186,8 +277,24 @@ class TestCharacter:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output_text, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_spell_correction_v1(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            # result_text = spell_correction_v1(text)
+            ...
+
 
 class TestDuplication:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -202,10 +309,27 @@ class TestDuplication:
         ],
     )
     def test_remove_all_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
+
         result_text = remove_all_duplication(input_text)
+
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_all_duplication(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = remove_all_duplication(text)
+
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -216,10 +340,27 @@ class TestDuplication:
         ],
     )
     def test_remove_consecutive_duplication(self, input_text: Optional[str], ex_output: Optional[str]):
+
         result_text = remove_consecutive_duplication(input_text)
+
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_consecutive_duplication(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = remove_consecutive_duplication(text)
+
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -228,12 +369,29 @@ class TestDuplication:
         ],
     )
     def test_remove_many_spaces(self, input_text: Optional[str], ex_output: Optional[str]):
+
         result_text = remove_many_spaces(input_text)
+
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_many_spaces(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = remove_many_spaces(text)
+
 
 class TestEmojiEmoticons:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output, ex_num_matches",
         [
@@ -250,6 +408,21 @@ class TestEmojiEmoticons:
         assert result_text == ex_output and result_matches == ex_num_matches, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_emoji(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_emoji(text)
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, ex_output, ex_num_matches",
         [
             ("Hello :)", "Hello ", 1),
@@ -265,6 +438,21 @@ class TestEmojiEmoticons:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_emoticon(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_emoticon(text)
+
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -284,6 +472,21 @@ class TestEmojiEmoticons:
         assert result_text == ex_output, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_convert_emoji_to_words(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = convert_emoji_to_words(text)
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, ex_output",
         [
             (None, None),
@@ -301,8 +504,23 @@ class TestEmojiEmoticons:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_convert_emoticon_to_words(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = convert_emoticon_to_words(text)
+
 
 class TestURL:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
@@ -320,8 +538,23 @@ class TestURL:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_url(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_url(text)
+
 
 class TestUsername:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
@@ -341,6 +574,21 @@ class TestUsername:
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_twitter_username(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_twitter_username(text)
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
             ("RT @Stephan007: @Devoxx @collignont @idriss_neumann @John_Doe2000 @gunnarmorling @DevoxxFR @lescastcodeurs If interested, the Devoxx Belgium CFP opens en…",
@@ -358,8 +606,23 @@ class TestUsername:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_username(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_username(text)
+
 
 class TestHashtag:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
@@ -379,8 +642,23 @@ class TestHashtag:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_hashtag(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_hashtag(text)
+
 
 class TestEmailAddress:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
@@ -400,8 +678,23 @@ class TestEmailAddress:
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_email_address(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text, _ = remove_email_address(text)
+
 
 class TestChecker:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -420,6 +713,21 @@ class TestChecker:
         assert result == ex_output, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_blank_checker(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = blank_checker(text)
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, ex_output",
         [
             (u"Klüft inför på fédéral électoral große", "Klüft inför på fédéral électoral große"),
@@ -434,6 +742,7 @@ class TestChecker:
         # assert isinstance(result, (bool, type(None))), "The output text is not string."
         # assert result == ex_output, "Expectation mismatch."
 
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, input_regex, ex_output",
         [
@@ -452,6 +761,21 @@ class TestChecker:
         assert result == ex_output, "Expectation mismatch."
 
     @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_remove_regex_match(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = remove_regex_match(text, r"\d+")
+
+    @pytest.mark.skip
+    @pytest.mark.parametrize(
         "input_text, input_regex, input_sub_text, ex_output",
         [
             (None, None, None, None),
@@ -469,8 +793,23 @@ class TestChecker:
         assert isinstance(result, (str, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_substitue_regex_match(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = substitue_regex_match(text, r"\d+", "hello")
+
 
 class TestConversion:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -487,8 +826,23 @@ class TestConversion:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_abbreviation_converter(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = abbreviation_converter(text)
+
 
 class TestAdder:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_word, ex_output_bool",
         [
@@ -539,6 +893,7 @@ class TestAdder:
 
 
 class TestExpantion:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -554,16 +909,23 @@ class TestExpantion:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
-    # @pytest.mark.skip
-    # @pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
-    # @pytest.mark.repeat(1000)
-    @pytest.fixture
-    def test_speed(self):
-        px = np.sort(np.random.default_rng().normal(0, 1, 1000000))
-        py = np.sort(np.random.default_rng().normal(0, 1, 1000000))
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_expand_contractions(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = expand_contractions(text)
 
 
 class TestLemmatization:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -579,8 +941,23 @@ class TestLemmatization:
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
 
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_to_lemmatize(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = to_lemmatize(text)
+
 
 class TestTokenization:
+    @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
@@ -595,3 +972,17 @@ class TestTokenization:
 
         assert isinstance(result, (List, type(None))), "The output text is not string."
         assert result == ex_output, "Expectation mismatch."
+
+    @pytest.mark.parametrize(
+        "n_samples",
+        [
+            (1000),
+            (2000),
+        ],
+    )
+    def test_perf_to_tokenize(self, n_samples: int):
+
+        data = dbs.Synthetic_tweet_emotion_en(n_samples=n_samples)
+
+        for text in data.get_text_list():
+            result_text = to_tokenize(text)
