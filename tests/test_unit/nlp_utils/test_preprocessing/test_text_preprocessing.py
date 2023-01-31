@@ -147,6 +147,9 @@ class TestNumbers:
         [
             ("Hello123 678 1000 44word 5", "Hello   word "),
             (" 5", " "),
+            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs", "H$Charly is now available to claim at https://t.co/LPOlKtV üö∞ @Charlytoken üëë ¬† #Cardano $ADA #TapTools https://t.co/hJBnoqwrs"),
+            ("$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ 1.98900000 ‚Ä¢ Sharing = Pushing!!",
+             "$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ . ‚Ä¢ Sharing = Pushing!!"),
             (None, None)
         ],
     )
