@@ -474,7 +474,7 @@ def remove_any_char(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if not isinstance(text, str):
         return None, 0
 
-    return re.subn(CHAR_PATTERN, r"", text, re.I | re.A)
+    return re.subn(CHAR_PATTERN, r" ", text, re.I | re.A)
 
 
 def remove_all_duplication(text: Optional[str]) -> Optional[str]:
@@ -1379,17 +1379,7 @@ def spell_correction_v1(text: Optional[str]) -> Optional[str]:
     return " ".join(corrected_text)
 
 
-# TODO: [Done] remove xml precisely BeautifulSoup
-# TODO: [Done] add specific character remove
-# TODO: [Done] give re and apply that
-# TODO: [Done] User add RE and replace text
-# TODO: [Done] stemming and lemmatization https://towardsdatascience.com/text-preprocessing-for-data-scientist-3d2419c8199d
-# TODO: [Done] some function should apply to the whole data set such as remove frequent words, rare words, and distribution of language if doesn't have language label
-# TODO: [Done] add to the stopwords set
-# TODO: [Done] Conversion of Emoticon to Words https://github.com/neko941/ASWT2/blob/1812a617598dc8778fb41ab3c382841c947c88ae/preprocessing.py
-# TODO: [Done] Conversion of Emoji to Words https://github.com/SammyCui/twitter-sentiment-analysis/blob/93ecc337147f8c9b4dbf69eb0153af0eab5a21f0/data_processing.py
-# TODO: [Done] Chat Words Conversion
-# TODO: [Done] Spelling Correction
+# TODO: hel_lo convert to hello
 # TODO: camelcase
 # TODO: Convert the abbreviation of countries to the standard shape
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936

@@ -174,11 +174,11 @@ class TestNumbers:
 
 
 class TestCharacter:
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
-            ("!&  Hel_lo *@ $world!(", "  Hello  world", 8),
+            ("!&  Hel_lo *@ $world!(", "    Hel lo     world  ", 8),
             (None, None, 0),
         ],
     )
