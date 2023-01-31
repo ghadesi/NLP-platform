@@ -660,7 +660,7 @@ def blank_checker(text: Optional[str]) -> Optional[bool]:
         return False
 
 
-def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) -> Tuple[Optional[str], Optional[int]]:
+def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) -> Tuple[Optional[str], int]:
     """
     Removes special characters through the input list from the given text
 
@@ -681,7 +681,12 @@ def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) 
     if len(special_char) == 0:
         return text, 0
 
-    return re.subn("|".join(special_char), r"", text)
+    count = 0
+    for char in special_char:
+        count += text.count(char)
+        text = text.replace(char, " ")
+        
+    return text, count
 
 
 def expand_contractions(text: Optional[str]) -> Optional[str]:
@@ -1377,7 +1382,6 @@ def spell_correction_v1(text: Optional[str]) -> Optional[str]:
         else:
             corrected_text.append(word)
     return " ".join(corrected_text)
-
 
 # TODO: hel_lo convert to hello
 # TODO: camelcase
