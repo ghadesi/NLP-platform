@@ -208,14 +208,19 @@ class TestCharacter:
     @pytest.mark.parametrize(
         "input_text, input_spec_char, ex_output_text, ex_num_matches",
         [
-            ("Hello, ¿the first char is ٪ and these onces《 》!٪", ["٪", "《", "》", "¿"], "Hello, the first char is  and these onces !", 5),
+            ("Hello, ¿the first char is ٪ and these onces《 》!٪", ["٪", "《", "》", "¿"], "Hello,  the first char is   and these onces   ! ", 5),
             ("Hello, ", None, "Hello, ", 0),
+            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs", ["$", "", "ü", "ö", "∞", "@", "ë", "¬", "†", "#"], "H Charly is now available to claim at https://t.co/LPOl9Kt08V       Charlytoken7          Cardano  ADA  TapTools https://t.co/6hJBnoqwrs", 15),
+            ("$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ 1.98900000 ‚Ä¢ Sharing = Pushing!!", [
+             "$", ".", "!", ",", ":", "Ä", "¢", "=", "!", "‚"], " XTZ  Push  Keep on rising      Price (USD)    1 98900000     Sharing   Pushing  ", 16),
             (None, None, None, 0),
         ],
     )
     def test_remove_special_char(self, input_text: Optional[str], input_spec_char: Optional[List[str]], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_special_char(input_text, input_spec_char)
+        
+        print("salam", result_text, result_matches)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
