@@ -179,6 +179,8 @@ class TestCharacter:
         "input_text, ex_output_text, ex_num_matches",
         [
             ("!&  Hel_lo *@ $world!(", "    Hel lo     world  ", 8),
+            ("$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ 1.98900000 ‚Ä¢ Sharing = Pushing!!",
+             " XTZ  Push  Keep on rising      Price  USD                    Sharing   Pushing  ", 27),
             (None, None, 0),
         ],
     )
@@ -220,8 +222,6 @@ class TestCharacter:
 
         result_text, result_matches = remove_special_char(input_text, input_spec_char)
         
-        print("salam", result_text, result_matches)
-
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
@@ -240,12 +240,14 @@ class TestCharacter:
         for text in data.get_text_list():
             result_text, _ = remove_special_char(text, ["٪", "《", "》", "¿"])
 
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text",
         [
-            ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"", "James Hi Thomas I havent seen you for ages How have you been"),
-            ("!hi. wh?at is the weat[h]er lik?e.", "hi what is the weather like"),
+            ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"", "James   Hi Thomas  I haven t seen you for ages  How have you been  "),
+            ("!hi. wh?at is the weat[h]er lik?e.", " hi  wh at is the weat h er lik e "),
+            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs", 
+             "H Charly is now available to claim at https   t co LPOl9Kt08V üö∞  Charlytoken7 üëë ¬†  Cardano  ADA  TapTools https   t co 6hJBnoqwrs"),
             (None, None),
         ],
     )
