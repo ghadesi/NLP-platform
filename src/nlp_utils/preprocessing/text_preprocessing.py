@@ -87,6 +87,8 @@ BLANK_PATTERN = re.compile(r"^\s*$")
 
 CONS_DUPLICATION_PATTERN = re.compile(r"\b(\w+)( \1\b)+", flags=re.IGNORECASE)
 
+PUNCTUATION_PATTERN = re.compile('[%s]' % re.escape(string.punctuation))
+
 # Typos, slang and other
 with open('./assets/slang_words.txt') as file:
     SAMPLE_TYPOS_SLANG = dict(map(str.strip, line.partition('\t')[::2])
@@ -685,7 +687,7 @@ def remove_special_char(text: Optional[str], special_char: Optional[List[str]]) 
     for char in special_char:
         count += text.count(char)
         text = text.replace(char, " ")
-        
+
     return text, count
 
 
@@ -1075,7 +1077,7 @@ def abbreviation_converter(text: Optional[str]) -> Optional[str]:
 
 def remove_punctuation(text: Optional[str]) -> Optional[str]:
     """
-    Remove the punctuations from the given text.
+    Remove punctuation from the given text and replace it with space..
 
     Args:
         text (Optional[str]): a text that may contain punctuation
@@ -1087,7 +1089,7 @@ def remove_punctuation(text: Optional[str]) -> Optional[str]:
     if pd.isnull(text) or not isinstance(text, str):
         return None
 
-    return text.translate(str.maketrans('', '', string.punctuation))
+    return PUNCTUATION_PATTERN.sub(" ", text)
 
 
 def to_lemmatize(text: Optional[str]) -> Optional[str]:
@@ -1389,6 +1391,8 @@ def spell_correction_v1(text: Optional[str]) -> Optional[str]:
 # TODO: Jieba  https://medium.com/@makcedward/nlp-pipeline-stop-words-part-5-d6770df8a936
 # TODO: Paralalization https://prrao87.github.io/blog/spacy/nlp/performance/2020/05/02/spacy-multiprocess.html
 # TODO: I have to work on the below class as a the second version of the spell correction class. Aso: https://github.com/Deffro/text-preprocessing-techniques/blob/master/techniques.py
+
+
 class Spell_checker_v1():
     """
     This is spell correction class and supports 12 languages including: English, Polish, Turkish, Russian, Ukrainian, Czech, Portuguese, Greek,
