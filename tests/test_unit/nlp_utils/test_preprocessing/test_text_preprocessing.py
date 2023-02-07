@@ -434,12 +434,13 @@ class TestEmojiEmoticons:
         for text in data.get_text_list():
             result_text, _ = remove_emoji(text)
 
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output, ex_num_matches",
         [
-            ("Hello :)", "Hello ", 1),
-            ("Hello :-)", "Hello ", 1),
+            ("Hello :)", "Hello  ", 1),
+            ("Hello :):)", "Hello   ", 2),
+            ("Hello :-)", "Hello  ", 1),
             (None, None, 0),
         ],
     )

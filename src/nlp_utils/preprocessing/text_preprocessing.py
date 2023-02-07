@@ -550,11 +550,10 @@ def remove_emoji(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
         return None, 0
 
     emoji_lst = EMOJI_PATTERN.findall(text)
-    
     emoji_count = 0
     for _emoji in emoji_lst:
         emoji_count += len(_emoji)
-    
+
     text = EMOJI_PATTERN.sub(r' ', text)
 
     return text, emoji_count
@@ -1059,7 +1058,7 @@ def remove_emoticon(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if pd.isnull(text) or not isinstance(text, str):
         return None, 0
 
-    return re.subn(EMOTICON_PATTERN, r'', text)
+    return re.subn(EMOTICON_PATTERN, r' ', text)
 
 
 def abbreviation_converter(text: Optional[str]) -> Optional[str]:
