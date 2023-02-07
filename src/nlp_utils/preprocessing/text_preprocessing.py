@@ -1298,7 +1298,7 @@ def convert_emoticon_to_words(text: Optional[str]) -> Optional[str]:
         return None
 
     for emot in Emoticon_Dict:
-        text = re.sub(u'('+emot+')', "_".join(Emoticon_Dict[emot].replace(",", "").split()), text)
+        text = re.sub(u'('+emot+')', "_".join(Emoticon_Dict[emot].replace(",", "").split()) + " ", text)
 
     return text
 
@@ -1318,7 +1318,7 @@ def convert_emoji_to_words(text: Optional[str]) -> Optional[str]:
         return None
 
     for emot in UNICODE_EMOJI:
-        text = text.replace(emot, "_".join(UNICODE_EMOJI[emot].replace(",", "").replace(":", "").split()))
+        text = text.replace(emot, "_".join(UNICODE_EMOJI[emot].replace(",", "").replace(":", "").split()) + " ")
 
     return text
 

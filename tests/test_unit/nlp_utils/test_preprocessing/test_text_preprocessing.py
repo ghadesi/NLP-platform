@@ -466,16 +466,17 @@ class TestEmojiEmoticons:
         for text in data.get_text_list():
             result_text, _ = remove_emoticon(text)
 
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
             (None, None),
             ("", ""),
             ("Hello", "Hello"),
-            ("Hello 😂", "Hello face_with_tears_of_joy"),  # Ask to Amir: Should we remove the underscore?
-            ("Hello 🍕", "Hello pizza"),
-            ("Hello ✅ ✍🏻 🧚🏼‍♀️", "Hello check_mark_button writing_handlight_skin_tone fairymedium-light_skin_tone‍female_sign️"),
+            ("Hello 😂", "Hello face_with_tears_of_joy "),  # Ask to Amir: Should we remove the underscore?
+            ("Hello 🍕", "Hello pizza "),
+            ("Hello 🍕🍕", "Hello pizza pizza "),
+            ("Hello ✅ ✍🏻 🧚🏼‍♀️", "Hello check_mark_button  writing_hand light_skin_tone  fairy medium-light_skin_tone female_sign️  "),
         ],
     )
     def test_convert_emoji_to_words(self, input_text: Optional[str], ex_output: Optional[str]):
@@ -499,16 +500,17 @@ class TestEmojiEmoticons:
         for text in data.get_text_list():
             result_text = convert_emoji_to_words(text)
 
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output",
         [
             (None, None),
             ("", ""),
             ("Hello", "Hello"),
-            ("Hello :)", "Hello Happy_face_or_smiley"),  # Ask to Amir: Should we remove the underscore?
-            ("Hello :-)", "Hello Happy_face_smiley"),
-            ("Hello :) :(", "Hello Happy_face_or_smiley Frown_sad_andry_or_pouting"),
+            ("Hello :)", "Hello Happy_face_or_smiley "),  # Ask to Amir: Should we remove the underscore?
+            ("Hello :):)", "Hello Happy_face_or_smiley Happy_face_or_smiley "),
+            ("Hello :-)", "Hello Happy_face_smiley "),
+            ("Hello :) :(", "Hello Happy_face_or_smiley  Frown_sad_andry_or_pouting "),
         ],
     )
     def test_convert_emoticon_to_words(self, input_text: Optional[str], ex_output: Optional[str]):
