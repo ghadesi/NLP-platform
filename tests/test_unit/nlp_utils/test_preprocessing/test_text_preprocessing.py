@@ -401,12 +401,15 @@ class TestDuplication:
 
 
 class TestEmojiEmoticons:
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output, ex_num_matches",
         [
-            ("RT @ kaastore: 😁 un sourire=un cadeau 🎁", "RT @ kaastore:  un sourire=un cadeau ", 2),
+            ("RT @ kaastore: 😁 un sourire=un cadeau 🎁", "RT @ kaastore:   un sourire=un cadeau  ", 2),
             (None, None, 0),
+            ("⚪ An Anon Swapped $799K in $WBTC for $sBTC on #1inch 🐉 🐋 ($7.46M)", "  An Anon Swapped $799K in $WBTC for $sBTC on #1inch     ($7.46M)", 3),
+            ("[SOLD after 21 hour(s)] 🦀 GEM(✨ Earl Cray 5/18📈📉)", "[SOLD after 21 hour(s)]   GEM(  Earl Cray 5/18 )", 4), 
+            ("picture says more than words 😎💥🚀 🦍🤝🦍", "picture says more than words    ", 6),
         ],
     )
     def test_remove_emoji(self, input_text: Optional[str], ex_output: Optional[str], ex_num_matches: Optional[int]):

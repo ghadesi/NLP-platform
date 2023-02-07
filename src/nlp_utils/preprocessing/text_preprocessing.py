@@ -549,7 +549,15 @@ def remove_emoji(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if pd.isnull(text) or not isinstance(text, str):
         return None, 0
 
-    return re.subn(EMOJI_PATTERN, r'', text)
+    emoji_lst = EMOJI_PATTERN.findall(text)
+    
+    emoji_count = 0
+    for _emoji in emoji_lst:
+        emoji_count += len(_emoji)
+    
+    text = EMOJI_PATTERN.sub(r' ', text)
+
+    return text, emoji_count
 
 
 def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
