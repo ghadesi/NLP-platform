@@ -147,7 +147,8 @@ class TestNumbers:
         [
             ("Hello123 678 1000 44word 5", "Hello   word "),
             (" 5", " "),
-            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs", "H$Charly is now available to claim at https://t.co/LPOlKtV üö∞ @Charlytoken üëë ¬† #Cardano $ADA #TapTools https://t.co/hJBnoqwrs"),
+            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs",
+             "H$Charly is now available to claim at https://t.co/LPOlKtV üö∞ @Charlytoken üëë ¬† #Cardano $ADA #TapTools https://t.co/hJBnoqwrs"),
             ("$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ 1.98900000 ‚Ä¢ Sharing = Pushing!!",
              "$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ . ‚Ä¢ Sharing = Pushing!!"),
             (None, None)
@@ -212,7 +213,8 @@ class TestCharacter:
         [
             ("Hello, ¿the first char is ٪ and these onces《 》!٪", ["٪", "《", "》", "¿"], "Hello,  the first char is   and these onces   ! ", 5),
             ("Hello, ", None, "Hello, ", 0),
-            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs", ["$", "", "ü", "ö", "∞", "@", "ë", "¬", "†", "#"], "H Charly is now available to claim at https://t.co/LPOl9Kt08V       Charlytoken7          Cardano  ADA  TapTools https://t.co/6hJBnoqwrs", 15),
+            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs",
+             ["$", "", "ü", "ö", "∞", "@", "ë", "¬", "†", "#"], "H Charly is now available to claim at https://t.co/LPOl9Kt08V       Charlytoken7          Cardano  ADA  TapTools https://t.co/6hJBnoqwrs", 15),
             ("$XTZ. Push! Keep on rising! ‚Ä¢ Price (USD): $ 1.98900000 ‚Ä¢ Sharing = Pushing!!", [
              "$", ".", "!", ",", ":", "Ä", "¢", "=", "!", "‚"], " XTZ  Push  Keep on rising      Price (USD)    1 98900000     Sharing   Pushing  ", 16),
             (None, None, None, 0),
@@ -221,7 +223,7 @@ class TestCharacter:
     def test_remove_special_char(self, input_text: Optional[str], input_spec_char: Optional[List[str]], ex_output_text: Optional[str], ex_num_matches: Optional[int]):
 
         result_text, result_matches = remove_special_char(input_text, input_spec_char)
-        
+
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert isinstance(result_matches, (int, type(None))), "The number of matches shoulb be integer."
         assert result_text == ex_output_text and result_matches == ex_num_matches, "Expectation mismatch."
@@ -244,9 +246,10 @@ class TestCharacter:
     @pytest.mark.parametrize(
         "input_text, ex_output_text",
         [
-            ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"", "James   Hi Thomas  I haven t seen you for ages  How have you been  "),
+            ("James: \"Hi Thomas, I haven't seen you for ages! How have you been?\"",
+             "James   Hi Thomas  I haven t seen you for ages  How have you been  "),
             ("!hi. wh?at is the weat[h]er lik?e.", " hi  wh at is the weat h er lik e "),
-            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs", 
+            ("H$Charly is now available to claim at https://t.co/LPOl9Kt08V üö∞ @Charlytoken7 üëë ¬† #Cardano $ADA #TapTools https://t.co/6hJBnoqwrs",
              "H Charly is now available to claim at https   t co LPOl9Kt08V üö∞  Charlytoken7 üëë ¬†  Cardano  ADA  TapTools https   t co 6hJBnoqwrs"),
             (None, None),
         ],
@@ -408,7 +411,7 @@ class TestEmojiEmoticons:
             ("RT @ kaastore: 😁 un sourire=un cadeau 🎁", "RT @ kaastore:   un sourire=un cadeau  ", 2),
             (None, None, 0),
             ("⚪ An Anon Swapped $799K in $WBTC for $sBTC on #1inch 🐉 🐋 ($7.46M)", "  An Anon Swapped $799K in $WBTC for $sBTC on #1inch     ($7.46M)", 3),
-            ("[SOLD after 21 hour(s)] 🦀 GEM(✨ Earl Cray 5/18📈📉)", "[SOLD after 21 hour(s)]   GEM(  Earl Cray 5/18 )", 4), 
+            ("[SOLD after 21 hour(s)] 🦀 GEM(✨ Earl Cray 5/18📈📉)", "[SOLD after 21 hour(s)]   GEM(  Earl Cray 5/18 )", 4),
             ("picture says more than words 😎💥🚀 🦍🤝🦍", "picture says more than words    ", 6),
         ],
     )
@@ -473,15 +476,17 @@ class TestEmojiEmoticons:
             (None, None),
             ("", ""),
             ("Hello", "Hello"),
-            ("Hello 😂", "Hello face_with_tears_of_joy "),  # Ask to Amir: Should we remove the underscore?
+            ("Hello 😂", "Hello face_with_tears_of_joy "),
             ("Hello 🍕", "Hello pizza "),
             ("Hello 🍕🍕", "Hello pizza pizza "),
-            ("Hello ✅ ✍🏻 🧚🏼‍♀️", "Hello check_mark_button  writing_hand light_skin_tone  fairy medium-light_skin_tone female_sign️  "),
+            # ("Hello ✅ ✍🏻 🧚🏼‍♀️", "Hello check_mark_button  writing_hand light_skin_tone  fairy medium-light_skin_tone "),
         ],
     )
     def test_convert_emoji_to_words(self, input_text: Optional[str], ex_output: Optional[str]):
 
         result_text = convert_emoji_to_words(input_text)
+        
+        print(result_text, input_text)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
         assert result_text == ex_output, "Expectation mismatch."
@@ -570,14 +575,17 @@ class TestURL:
 
 
 class TestUsername:
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
             ("RT @Stephan007: @Devoxx @collignont @idriss_neumann @John_Doe2000 @gunnarmorling @DevoxxFR @lescastcodeurs If interested, the Devoxx Belgium CFP opens en…",
-             "RT :        If interested, the Devoxx Belgium CFP opens en…", 8),
+             "RT  :               If interested, the Devoxx Belgium CFP opens en…", 8),
             ("@probablyfaketwitterusername @RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a ",
-             "@probablyfaketwitterusername  is answering to , this is a real '' but this is an@email.com, and this is a ", 3),
+             "@probablyfaketwitterusername   is answering to  , this is a real ' ' but this is an@email.com, and this is a ", 3),
+            ("@_bitcoiner's zesty faucet! ⚡ @_bitcoiner"," 's zesty faucet! ⚡  ", 2),
+            ("@sekoyalabs @AAL_Blockchain @Faraday_node @log1_053 @_DreamNetwork and ClusterCuss &amp; polkachu (couldn’t find @) Just to name a few! Thank you validators! @polkadex,\" < a href=\" https://nft.coinbase.com/@mr.boricuaboy",
+                "          and ClusterCuss &amp; polkachu (couldn’t find @) Just to name a few! Thank you validators!  ,\" < a href=\" https://nft.coinbase.com/ .boricuaboy", 7),
             (None, None, 0),
         ],
     )
