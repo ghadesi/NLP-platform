@@ -591,7 +591,7 @@ def remove_twitter_username(text: Optional[str]) -> Tuple[Optional[str], Optiona
     if pd.isnull(text) or not isinstance(text, str):
         return None, 0
 
-    return re.subn(TWITTER_USERNAME_PATTERN, r'', text)
+    return re.subn(TWITTER_USERNAME_PATTERN, r' ', text)
 
 
 def remove_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
