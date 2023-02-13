@@ -573,7 +573,7 @@ def remove_url(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:
     if pd.isnull(text) or not isinstance(text, str):
         return None, 0
 
-    return re.subn(URL_PATTERN, r'', text)
+    return re.subn(URL_PATTERN, r' ', text)
 
 
 def remove_twitter_username(text: Optional[str]) -> Tuple[Optional[str], Optional[int]]:

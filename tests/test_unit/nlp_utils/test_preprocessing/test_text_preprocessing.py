@@ -485,7 +485,7 @@ class TestEmojiEmoticons:
     def test_convert_emoji_to_words(self, input_text: Optional[str], ex_output: Optional[str]):
 
         result_text = convert_emoji_to_words(input_text)
-        
+
         print(result_text, input_text)
 
         assert isinstance(result_text, (str, type(None))), "The output text is not string."
@@ -541,13 +541,17 @@ class TestEmojiEmoticons:
 
 
 class TestURL:
-    @pytest.mark.skip
+    # @pytest.mark.skip
     @pytest.mark.parametrize(
         "input_text, ex_output_text, ex_num_matches",
         [
-            ("My website is https://www.twanda.com/apps/details?id=com.skgames.trafficracer%22", "My website is ", 1),
-            ("My websites are https://www.google.com and www.turintech.ai", "My websites are  and ", 2),
-            ("Look at these links: www.my.com:8069/tf/details?id=com.j.o%22 and ftp://amazon.com/g/G/e/2011/u-3.jpg", "Look at these links:  and ", 2),
+            ("My website is https://www.twanda.com/apps/details?id=com.skgames.trafficracer%22", "My website is  ", 1),
+            ("My websites are https://www.google.com and www.turintech.ai", "My websites are   and  ", 2),
+            ("Look at these links: www.my.com:8069/tf/details?id=com.j.o%22 and ftp://amazon.com/g/G/e/2011/u-3.jpg", "Look at these links:   and  ", 2),
+            ("Mover https://t.co/MlJb2gPDaq $XOM #stockmarket #kwhenfinance,\" < a href=""https://www.ayrshare.com""",
+             "Mover   $XOM #stockmarket #kwhenfinance,\" < a href="" """, 2),
+            ("TechnicalAnalysis https://t.co/ZRXJynZFDp\", \"<a href=\"\"http://www.chartmill.com\"\" rel=\"\"nofollow\"\">www.chartmill.com</a>\"",
+             "TechnicalAnalysis   \"<a href=\"\" \"\" rel=\"\"nofollow\"\"> </a>\"", 3),
             (None, None, 0),
         ],
     )
@@ -583,7 +587,7 @@ class TestUsername:
              "RT  :               If interested, the Devoxx Belgium CFP opens en…", 8),
             ("@probablyfaketwitterusername @RayFranco is answering to @AnPel, this is a real '@username83' but this is an@email.com, and this is a ",
              "@probablyfaketwitterusername   is answering to  , this is a real ' ' but this is an@email.com, and this is a ", 3),
-            ("@_bitcoiner's zesty faucet! ⚡ @_bitcoiner"," 's zesty faucet! ⚡  ", 2),
+            ("@_bitcoiner's zesty faucet! ⚡ @_bitcoiner", " 's zesty faucet! ⚡  ", 2),
             ("@sekoyalabs @AAL_Blockchain @Faraday_node @log1_053 @_DreamNetwork and ClusterCuss &amp; polkachu (couldn’t find @) Just to name a few! Thank you validators! @polkadex,\" < a href=\" https://nft.coinbase.com/@mr.boricuaboy",
                 "          and ClusterCuss &amp; polkachu (couldn’t find @) Just to name a few! Thank you validators!  ,\" < a href=\" https://nft.coinbase.com/ .boricuaboy", 7),
             (None, None, 0),
